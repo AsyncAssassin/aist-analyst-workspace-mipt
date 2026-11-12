@@ -1,0 +1,12 @@
+#!/usr/bin/env bash
+set -euo pipefail
+cd "$(dirname "$0")/.."
+mkdir -p .runtime
+mount="$(pwd)/.runtime:/evidence"
+for variant in pdf json; do
+  args=(--pdf-source)
+  if [[ "$variant" == json ]]; then args+=(--json-source); fi
+docker run --rm --platform linux/amd64 --network none -v "$(pwd)/scripts/roundtrip.py:/workspace/scripts/roundtrip.py:ro" "${AIST_BACKEND_CHECKS_IMAGE:-aist-backend-checks:local}" python /workspace/scripts/roundtrip.py "${args[@]}" > .runtime/roundtrip-python.json
+docker run --rm --platform linux/amd64 --network none -v "$mount" "${AIST_WEB_CHECKS_IMAGE:-aist-web-checks:local}" node --import tsx tests/roundtrip.ts /evidence/roundtrip-python.json /evidence/roundtrip-typescript.json
+docker run --rm --platform linux/amd64 --network none -v "$mount" -v "$(pwd)/scripts/roundtrip.py:/workspace/scripts/roundtrip.py:ro" "${AIST_BACKEND_CHECKS_IMAGE:-aist-backend-checks:local}" python /workspace/scripts/roundtrip.py "${args[@]}" /evidence/roundtrip-typescript.json
+done

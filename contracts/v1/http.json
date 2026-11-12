@@ -1,0 +1,1528 @@
+{
+  "$schema": "schemas/http.schema.json",
+  "contract_version": "D04.v1",
+  "status": "partially_implemented",
+  "authentication": "Password login only at POST /v1/auth/login; all other /v1 routes require existing AIST Bearer session and server-side ownership. Password and token are never logged.",
+  "common_errors": [
+    "unauthenticated",
+    "resource_not_found",
+    "validation_error",
+    "temporarily_unavailable"
+  ],
+  "error_schema": {
+    "$ref": "schemas/aist.schema.json#/$defs/ErrorResponse"
+  },
+  "error_statuses": {
+    "validation_error": 422,
+    "unauthenticated": 401,
+    "resource_not_found": 404,
+    "idempotency_conflict": 409,
+    "revision_conflict": 409,
+    "run_terminal": 409,
+    "source_not_ready": 409,
+    "unsupported_source": 415,
+    "source_limit": 422,
+    "unsupported_result_type": 422,
+    "unsupported_format": 422,
+    "incompatible_template": 422,
+    "tool_unavailable": 409,
+    "tool_failed": 502,
+    "fact_not_found": 422,
+    "calculation_invalid": 422,
+    "validation_failed": 422,
+    "acceptance_required": 409,
+    "budget_exceeded": 409,
+    "provider_error": 502,
+    "outcome_unknown": 503,
+    "export_not_ready": 409,
+    "export_missing": 410,
+    "export_corrupt": 409,
+    "cursor_invalid": 409,
+    "too_large": 413,
+    "temporarily_unavailable": 503,
+    "embedding_unavailable": 503,
+    "embedding_rate_limited": 429,
+    "embedding_invalid_response": 502,
+    "search_index_unavailable": 503,
+    "search_not_indexed": 409,
+    "sample_not_evidence": 422,
+    "moex_unavailable": 502,
+    "moex_invalid_response": 502,
+    "moex_identity_mismatch": 502,
+    "moex_busy": 429,
+    "invalid_credentials": 401,
+    "login_rate_limited": 429
+  },
+  "operations": {
+    "createProject": {
+      "method": "POST",
+      "path": "/v1/projects",
+      "path_parameters": null,
+      "query": null,
+      "headers": {
+        "$ref": "schemas/aist.schema.json#/$defs/WriteHeaders"
+      },
+      "request": {
+        "content_type": "application/json",
+        "schema": {
+          "$ref": "schemas/aist.schema.json#/$defs/CreateProject"
+        },
+        "json_part": null,
+        "binary_part": null
+      },
+      "responses": {
+        "201": {
+          "content_type": "application/json",
+          "schema": {
+            "$ref": "schemas/aist.schema.json#/$defs/Project"
+          },
+          "headers": null
+        },
+        "200": {
+          "content_type": "application/json",
+          "schema": {
+            "$ref": "schemas/aist.schema.json#/$defs/Project"
+          },
+          "headers": null
+        }
+      },
+      "errors": [
+        "idempotency_conflict"
+      ],
+      "idempotency": true
+    },
+    "listProjects": {
+      "method": "GET",
+      "path": "/v1/projects",
+      "path_parameters": null,
+      "query": {
+        "$ref": "schemas/aist.schema.json#/$defs/ListQuery"
+      },
+      "headers": null,
+      "request": null,
+      "responses": {
+        "200": {
+          "content_type": "application/json",
+          "schema": {
+            "$ref": "schemas/aist.schema.json#/$defs/ProjectPage"
+          },
+          "headers": null
+        }
+      },
+      "errors": [],
+      "idempotency": false
+    },
+    "getProject": {
+      "method": "GET",
+      "path": "/v1/projects/{project_id}",
+      "path_parameters": {
+        "$ref": "schemas/aist.schema.json#/$defs/PathProject"
+      },
+      "query": null,
+      "headers": null,
+      "request": null,
+      "responses": {
+        "200": {
+          "content_type": "application/json",
+          "schema": {
+            "$ref": "schemas/aist.schema.json#/$defs/Project"
+          },
+          "headers": null
+        }
+      },
+      "errors": [],
+      "idempotency": false
+    },
+    "getCapabilities": {
+      "method": "GET",
+      "path": "/v1/capabilities",
+      "path_parameters": null,
+      "query": null,
+      "headers": null,
+      "request": null,
+      "responses": {
+        "200": {
+          "content_type": "application/json",
+          "schema": {
+            "$ref": "schemas/aist.schema.json#/$defs/Registry"
+          },
+          "headers": null
+        }
+      },
+      "errors": [],
+      "idempotency": false
+    },
+    "uploadSource": {
+      "method": "POST",
+      "path": "/v1/projects/{project_id}/sources",
+      "path_parameters": {
+        "$ref": "schemas/aist.schema.json#/$defs/PathProject"
+      },
+      "query": null,
+      "headers": {
+        "$ref": "schemas/aist.schema.json#/$defs/WriteHeaders"
+      },
+      "request": {
+        "content_type": "multipart/form-data",
+        "schema": {
+          "$ref": "schemas/aist.schema.json#/$defs/UploadMetadata"
+        },
+        "json_part": "metadata",
+        "binary_part": "file"
+      },
+      "responses": {
+        "201": {
+          "content_type": "application/json",
+          "schema": {
+            "$ref": "schemas/aist.schema.json#/$defs/UploadReceipt"
+          },
+          "headers": null
+        },
+        "200": {
+          "content_type": "application/json",
+          "schema": {
+            "$ref": "schemas/aist.schema.json#/$defs/UploadReceipt"
+          },
+          "headers": null
+        }
+      },
+      "errors": [
+        "revision_conflict",
+        "unsupported_source",
+        "too_large",
+        "idempotency_conflict"
+      ],
+      "idempotency": true
+    },
+    "listSources": {
+      "method": "GET",
+      "path": "/v1/projects/{project_id}/sources",
+      "path_parameters": {
+        "$ref": "schemas/aist.schema.json#/$defs/PathProject"
+      },
+      "query": {
+        "$ref": "schemas/aist.schema.json#/$defs/ListQuery"
+      },
+      "headers": null,
+      "request": null,
+      "responses": {
+        "200": {
+          "content_type": "application/json",
+          "schema": {
+            "$ref": "schemas/aist.schema.json#/$defs/SourcePage"
+          },
+          "headers": null
+        }
+      },
+      "errors": [],
+      "idempotency": false
+    },
+    "getSource": {
+      "method": "GET",
+      "path": "/v1/projects/{project_id}/sources/{source_id}",
+      "path_parameters": {
+        "$ref": "schemas/aist.schema.json#/$defs/PathProjectSource"
+      },
+      "query": null,
+      "headers": null,
+      "request": null,
+      "responses": {
+        "200": {
+          "content_type": "application/json",
+          "schema": {
+            "$ref": "schemas/aist.schema.json#/$defs/Source"
+          },
+          "headers": null
+        }
+      },
+      "errors": [],
+      "idempotency": false
+    },
+    "uploadSourceVersion": {
+      "method": "POST",
+      "path": "/v1/projects/{project_id}/sources/{source_id}/versions",
+      "path_parameters": {
+        "$ref": "schemas/aist.schema.json#/$defs/PathProjectSource"
+      },
+      "query": null,
+      "headers": {
+        "$ref": "schemas/aist.schema.json#/$defs/WriteHeaders"
+      },
+      "request": {
+        "content_type": "multipart/form-data",
+        "schema": {
+          "$ref": "schemas/aist.schema.json#/$defs/UploadMetadata"
+        },
+        "json_part": "metadata",
+        "binary_part": "file"
+      },
+      "responses": {
+        "201": {
+          "content_type": "application/json",
+          "schema": {
+            "$ref": "schemas/aist.schema.json#/$defs/UploadReceipt"
+          },
+          "headers": null
+        },
+        "200": {
+          "content_type": "application/json",
+          "schema": {
+            "$ref": "schemas/aist.schema.json#/$defs/UploadReceipt"
+          },
+          "headers": null
+        }
+      },
+      "errors": [
+        "revision_conflict",
+        "unsupported_source",
+        "too_large",
+        "idempotency_conflict"
+      ],
+      "idempotency": true
+    },
+    "getSourceVersion": {
+      "method": "GET",
+      "path": "/v1/projects/{project_id}/source-versions/{source_version_id}",
+      "path_parameters": {
+        "$ref": "schemas/aist.schema.json#/$defs/PathProjectSourceVersion"
+      },
+      "query": {
+        "$ref": "schemas/aist.schema.json#/$defs/PdfMetadataQuery"
+      },
+      "headers": null,
+      "request": null,
+      "responses": {
+        "200": {
+          "content_type": "application/json",
+          "schema": {
+            "$ref": "schemas/aist.schema.json#/$defs/SourceVersion"
+          },
+          "headers": null
+        }
+      },
+      "errors": [],
+      "idempotency": false
+    },
+    "readSourcePage": {
+      "method": "GET",
+      "path": "/v1/projects/{project_id}/source-versions/{source_version_id}/page",
+      "path_parameters": {
+        "$ref": "schemas/aist.schema.json#/$defs/PathProjectSourceVersion"
+      },
+      "query": {
+        "$ref": "schemas/aist.schema.json#/$defs/SourcePageQuery"
+      },
+      "headers": null,
+      "request": null,
+      "responses": {
+        "200": {
+          "content_type": "application/json",
+          "schema": {
+            "$ref": "schemas/aist.schema.json#/$defs/PageContent"
+          },
+          "headers": null
+        }
+      },
+      "errors": [
+        "source_not_ready"
+      ],
+      "idempotency": false
+    },
+    "downloadSource": {
+      "method": "GET",
+      "path": "/v1/projects/{project_id}/source-versions/{source_version_id}/file",
+      "path_parameters": {
+        "$ref": "schemas/aist.schema.json#/$defs/PathProjectSourceVersion"
+      },
+      "query": null,
+      "headers": null,
+      "request": null,
+      "responses": {
+        "200": {
+          "content_type": "application/octet-stream",
+          "schema": null,
+          "headers": {
+            "$ref": "schemas/aist.schema.json#/$defs/BinaryHeaders"
+          }
+        }
+      },
+      "errors": [
+        "export_missing",
+        "export_corrupt"
+      ],
+      "idempotency": false
+    },
+    "listSourceFacts": {
+      "method": "GET",
+      "path": "/v1/projects/{project_id}/source-versions/{source_version_id}/facts",
+      "path_parameters": {
+        "$ref": "schemas/aist.schema.json#/$defs/PathProjectSourceVersion"
+      },
+      "query": {
+        "$ref": "schemas/aist.schema.json#/$defs/ListQuery"
+      },
+      "headers": null,
+      "request": null,
+      "responses": {
+        "200": {
+          "content_type": "application/json",
+          "schema": {
+            "$ref": "schemas/aist.schema.json#/$defs/FactPage"
+          },
+          "headers": null
+        }
+      },
+      "errors": [
+        "source_not_ready"
+      ],
+      "idempotency": false
+    },
+    "createConversation": {
+      "method": "POST",
+      "path": "/v1/projects/{project_id}/conversations",
+      "path_parameters": {
+        "$ref": "schemas/aist.schema.json#/$defs/PathProject"
+      },
+      "query": null,
+      "headers": {
+        "$ref": "schemas/aist.schema.json#/$defs/WriteHeaders"
+      },
+      "request": {
+        "content_type": "application/json",
+        "schema": {
+          "$ref": "schemas/aist.schema.json#/$defs/CreateConversation"
+        },
+        "json_part": null,
+        "binary_part": null
+      },
+      "responses": {
+        "201": {
+          "content_type": "application/json",
+          "schema": {
+            "$ref": "schemas/aist.schema.json#/$defs/Conversation"
+          },
+          "headers": null
+        },
+        "200": {
+          "content_type": "application/json",
+          "schema": {
+            "$ref": "schemas/aist.schema.json#/$defs/Conversation"
+          },
+          "headers": null
+        }
+      },
+      "errors": [
+        "idempotency_conflict"
+      ],
+      "idempotency": true
+    },
+    "listConversations": {
+      "method": "GET",
+      "path": "/v1/projects/{project_id}/conversations",
+      "path_parameters": {
+        "$ref": "schemas/aist.schema.json#/$defs/PathProject"
+      },
+      "query": {
+        "$ref": "schemas/aist.schema.json#/$defs/ListQuery"
+      },
+      "headers": null,
+      "request": null,
+      "responses": {
+        "200": {
+          "content_type": "application/json",
+          "schema": {
+            "$ref": "schemas/aist.schema.json#/$defs/ConversationPage"
+          },
+          "headers": null
+        }
+      },
+      "errors": [],
+      "idempotency": false
+    },
+    "getConversation": {
+      "method": "GET",
+      "path": "/v1/projects/{project_id}/conversations/{conversation_id}",
+      "path_parameters": {
+        "$ref": "schemas/aist.schema.json#/$defs/PathProjectConversation"
+      },
+      "query": null,
+      "headers": null,
+      "request": null,
+      "responses": {
+        "200": {
+          "content_type": "application/json",
+          "schema": {
+            "$ref": "schemas/aist.schema.json#/$defs/Conversation"
+          },
+          "headers": null
+        }
+      },
+      "errors": [],
+      "idempotency": false
+    },
+    "listMessages": {
+      "method": "GET",
+      "path": "/v1/projects/{project_id}/conversations/{conversation_id}/messages",
+      "path_parameters": {
+        "$ref": "schemas/aist.schema.json#/$defs/PathProjectConversation"
+      },
+      "query": {
+        "$ref": "schemas/aist.schema.json#/$defs/ListQuery"
+      },
+      "headers": null,
+      "request": null,
+      "responses": {
+        "200": {
+          "content_type": "application/json",
+          "schema": {
+            "$ref": "schemas/aist.schema.json#/$defs/MessagePage"
+          },
+          "headers": null
+        }
+      },
+      "errors": [],
+      "idempotency": false
+    },
+    "submitMessage": {
+      "method": "POST",
+      "path": "/v1/projects/{project_id}/conversations/{conversation_id}/messages",
+      "path_parameters": {
+        "$ref": "schemas/aist.schema.json#/$defs/PathProjectConversation"
+      },
+      "query": null,
+      "headers": {
+        "$ref": "schemas/aist.schema.json#/$defs/WriteHeaders"
+      },
+      "request": {
+        "content_type": "application/json",
+        "schema": {
+          "$ref": "schemas/aist.schema.json#/$defs/CreateMessageRun"
+        },
+        "json_part": null,
+        "binary_part": null
+      },
+      "responses": {
+        "202": {
+          "content_type": "application/json",
+          "schema": {
+            "$ref": "schemas/aist.schema.json#/$defs/Submission"
+          },
+          "headers": null
+        },
+        "200": {
+          "content_type": "application/json",
+          "schema": {
+            "$ref": "schemas/aist.schema.json#/$defs/Submission"
+          },
+          "headers": null
+        }
+      },
+      "errors": [
+        "revision_conflict",
+        "source_not_ready",
+        "source_limit",
+        "unsupported_result_type",
+        "unsupported_format",
+        "tool_unavailable",
+        "budget_exceeded",
+        "idempotency_conflict"
+      ],
+      "idempotency": true
+    },
+    "listRuns": {
+      "method": "GET",
+      "path": "/v1/projects/{project_id}/runs",
+      "path_parameters": {
+        "$ref": "schemas/aist.schema.json#/$defs/PathProject"
+      },
+      "query": {
+        "$ref": "schemas/aist.schema.json#/$defs/RunListQuery"
+      },
+      "headers": null,
+      "request": null,
+      "responses": {
+        "200": {
+          "content_type": "application/json",
+          "schema": {
+            "$ref": "schemas/aist.schema.json#/$defs/RunPage"
+          },
+          "headers": null
+        }
+      },
+      "errors": [],
+      "idempotency": false
+    },
+    "getRun": {
+      "method": "GET",
+      "path": "/v1/projects/{project_id}/runs/{run_id}",
+      "path_parameters": {
+        "$ref": "schemas/aist.schema.json#/$defs/PathProjectRun"
+      },
+      "query": null,
+      "headers": null,
+      "request": null,
+      "responses": {
+        "200": {
+          "content_type": "application/json",
+          "schema": {
+            "$ref": "schemas/aist.schema.json#/$defs/Run"
+          },
+          "headers": null
+        }
+      },
+      "errors": [],
+      "idempotency": false
+    },
+    "getRunEvents": {
+      "method": "GET",
+      "path": "/v1/projects/{project_id}/runs/{run_id}/events",
+      "path_parameters": {
+        "$ref": "schemas/aist.schema.json#/$defs/PathProjectRun"
+      },
+      "query": {
+        "$ref": "schemas/aist.schema.json#/$defs/EventQuery"
+      },
+      "headers": null,
+      "request": null,
+      "responses": {
+        "200": {
+          "content_type": "application/json",
+          "schema": {
+            "$ref": "schemas/aist.schema.json#/$defs/EventPage"
+          },
+          "headers": null
+        }
+      },
+      "errors": [
+        "cursor_invalid"
+      ],
+      "idempotency": false
+    },
+    "streamRunEvents": {
+      "method": "GET",
+      "path": "/v1/projects/{project_id}/runs/{run_id}/events/stream",
+      "path_parameters": {
+        "$ref": "schemas/aist.schema.json#/$defs/PathProjectRun"
+      },
+      "query": {
+        "$ref": "schemas/aist.schema.json#/$defs/EventQuery"
+      },
+      "headers": {
+        "$ref": "schemas/aist.schema.json#/$defs/SseHeaders"
+      },
+      "request": null,
+      "responses": {
+        "200": {
+          "content_type": "text/event-stream",
+          "schema": {
+            "$ref": "schemas/aist.schema.json#/$defs/RunEvent"
+          },
+          "headers": null
+        }
+      },
+      "errors": [
+        "cursor_invalid"
+      ],
+      "idempotency": false
+    },
+    "cancelRun": {
+      "method": "POST",
+      "path": "/v1/projects/{project_id}/runs/{run_id}/cancel",
+      "path_parameters": {
+        "$ref": "schemas/aist.schema.json#/$defs/PathProjectRun"
+      },
+      "query": null,
+      "headers": {
+        "$ref": "schemas/aist.schema.json#/$defs/WriteHeaders"
+      },
+      "request": {
+        "content_type": "application/json",
+        "schema": {
+          "$ref": "schemas/aist.schema.json#/$defs/CancelRun"
+        },
+        "json_part": null,
+        "binary_part": null
+      },
+      "responses": {
+        "200": {
+          "content_type": "application/json",
+          "schema": {
+            "$ref": "schemas/aist.schema.json#/$defs/Run"
+          },
+          "headers": null
+        }
+      },
+      "errors": [
+        "revision_conflict",
+        "run_terminal",
+        "idempotency_conflict"
+      ],
+      "idempotency": true
+    },
+    "resumeRun": {
+      "method": "POST",
+      "path": "/v1/projects/{project_id}/runs/{run_id}/input",
+      "path_parameters": {
+        "$ref": "schemas/aist.schema.json#/$defs/PathProjectRun"
+      },
+      "query": null,
+      "headers": {
+        "$ref": "schemas/aist.schema.json#/$defs/WriteHeaders"
+      },
+      "request": {
+        "content_type": "application/json",
+        "schema": {
+          "$ref": "schemas/aist.schema.json#/$defs/ResumeRun"
+        },
+        "json_part": null,
+        "binary_part": null
+      },
+      "responses": {
+        "202": {
+          "content_type": "application/json",
+          "schema": {
+            "$ref": "schemas/aist.schema.json#/$defs/Submission"
+          },
+          "headers": null
+        },
+        "200": {
+          "content_type": "application/json",
+          "schema": {
+            "$ref": "schemas/aist.schema.json#/$defs/Submission"
+          },
+          "headers": null
+        }
+      },
+      "errors": [
+        "revision_conflict",
+        "run_terminal",
+        "tool_unavailable",
+        "budget_exceeded",
+        "idempotency_conflict"
+      ],
+      "idempotency": true
+    },
+    "listModelCalls": {
+      "method": "GET",
+      "path": "/v1/projects/{project_id}/runs/{run_id}/model-calls",
+      "path_parameters": {
+        "$ref": "schemas/aist.schema.json#/$defs/PathProjectRun"
+      },
+      "query": {
+        "$ref": "schemas/aist.schema.json#/$defs/ListQuery"
+      },
+      "headers": null,
+      "request": null,
+      "responses": {
+        "200": {
+          "content_type": "application/json",
+          "schema": {
+            "$ref": "schemas/aist.schema.json#/$defs/CallPage"
+          },
+          "headers": null
+        }
+      },
+      "errors": [],
+      "idempotency": false
+    },
+    "listToolCalls": {
+      "method": "GET",
+      "path": "/v1/projects/{project_id}/runs/{run_id}/tool-calls",
+      "path_parameters": {
+        "$ref": "schemas/aist.schema.json#/$defs/PathProjectRun"
+      },
+      "query": {
+        "$ref": "schemas/aist.schema.json#/$defs/ListQuery"
+      },
+      "headers": null,
+      "request": null,
+      "responses": {
+        "200": {
+          "content_type": "application/json",
+          "schema": {
+            "$ref": "schemas/aist.schema.json#/$defs/ToolCallPage"
+          },
+          "headers": null
+        }
+      },
+      "errors": [],
+      "idempotency": false
+    },
+    "listUsage": {
+      "method": "GET",
+      "path": "/v1/projects/{project_id}/runs/{run_id}/usage",
+      "path_parameters": {
+        "$ref": "schemas/aist.schema.json#/$defs/PathProjectRun"
+      },
+      "query": {
+        "$ref": "schemas/aist.schema.json#/$defs/ListQuery"
+      },
+      "headers": null,
+      "request": null,
+      "responses": {
+        "200": {
+          "content_type": "application/json",
+          "schema": {
+            "$ref": "schemas/aist.schema.json#/$defs/UsagePage"
+          },
+          "headers": null
+        }
+      },
+      "errors": [],
+      "idempotency": false
+    },
+    "listArtifacts": {
+      "method": "GET",
+      "path": "/v1/projects/{project_id}/artifacts",
+      "path_parameters": {
+        "$ref": "schemas/aist.schema.json#/$defs/PathProject"
+      },
+      "query": {
+        "$ref": "schemas/aist.schema.json#/$defs/ListQuery"
+      },
+      "headers": null,
+      "request": null,
+      "responses": {
+        "200": {
+          "content_type": "application/json",
+          "schema": {
+            "$ref": "schemas/aist.schema.json#/$defs/ArtifactPage"
+          },
+          "headers": null
+        }
+      },
+      "errors": [],
+      "idempotency": false
+    },
+    "getArtifact": {
+      "method": "GET",
+      "path": "/v1/projects/{project_id}/artifacts/{artifact_id}",
+      "path_parameters": {
+        "$ref": "schemas/aist.schema.json#/$defs/PathProjectArtifact"
+      },
+      "query": null,
+      "headers": null,
+      "request": null,
+      "responses": {
+        "200": {
+          "content_type": "application/json",
+          "schema": {
+            "$ref": "schemas/aist.schema.json#/$defs/Artifact"
+          },
+          "headers": null
+        }
+      },
+      "errors": [],
+      "idempotency": false
+    },
+    "listVersions": {
+      "method": "GET",
+      "path": "/v1/projects/{project_id}/artifacts/{artifact_id}/versions",
+      "path_parameters": {
+        "$ref": "schemas/aist.schema.json#/$defs/PathProjectArtifact"
+      },
+      "query": {
+        "$ref": "schemas/aist.schema.json#/$defs/ListQuery"
+      },
+      "headers": null,
+      "request": null,
+      "responses": {
+        "200": {
+          "content_type": "application/json",
+          "schema": {
+            "$ref": "schemas/aist.schema.json#/$defs/VersionPage"
+          },
+          "headers": null
+        }
+      },
+      "errors": [],
+      "idempotency": false
+    },
+    "getVersion": {
+      "method": "GET",
+      "path": "/v1/projects/{project_id}/artifacts/{artifact_id}/versions/{version_id}",
+      "path_parameters": {
+        "$ref": "schemas/aist.schema.json#/$defs/PathProjectArtifactVersion"
+      },
+      "query": null,
+      "headers": null,
+      "request": null,
+      "responses": {
+        "200": {
+          "content_type": "application/json",
+          "schema": {
+            "$ref": "schemas/aist.schema.json#/$defs/VersionView"
+          },
+          "headers": null
+        }
+      },
+      "errors": [],
+      "idempotency": false
+    },
+    "saveVersion": {
+      "method": "POST",
+      "path": "/v1/projects/{project_id}/artifacts/{artifact_id}/versions",
+      "path_parameters": {
+        "$ref": "schemas/aist.schema.json#/$defs/PathProjectArtifact"
+      },
+      "query": null,
+      "headers": {
+        "$ref": "schemas/aist.schema.json#/$defs/WriteHeaders"
+      },
+      "request": {
+        "content_type": "application/json",
+        "schema": {
+          "$ref": "schemas/aist.schema.json#/$defs/SaveVersion"
+        },
+        "json_part": null,
+        "binary_part": null
+      },
+      "responses": {
+        "201": {
+          "content_type": "application/json",
+          "schema": {
+            "$ref": "schemas/aist.schema.json#/$defs/VersionView"
+          },
+          "headers": null
+        },
+        "200": {
+          "content_type": "application/json",
+          "schema": {
+            "$ref": "schemas/aist.schema.json#/$defs/VersionView"
+          },
+          "headers": null
+        }
+      },
+      "errors": [
+        "revision_conflict",
+        "validation_failed",
+        "unsupported_result_type",
+        "idempotency_conflict"
+      ],
+      "idempotency": true
+    },
+    "acceptVersion": {
+      "method": "POST",
+      "path": "/v1/projects/{project_id}/artifacts/{artifact_id}/versions/{version_id}/accept",
+      "path_parameters": {
+        "$ref": "schemas/aist.schema.json#/$defs/PathProjectArtifactVersion"
+      },
+      "query": null,
+      "headers": {
+        "$ref": "schemas/aist.schema.json#/$defs/WriteHeaders"
+      },
+      "request": {
+        "content_type": "application/json",
+        "schema": {
+          "$ref": "schemas/aist.schema.json#/$defs/AcceptVersion"
+        },
+        "json_part": null,
+        "binary_part": null
+      },
+      "responses": {
+        "200": {
+          "content_type": "application/json",
+          "schema": {
+            "$ref": "schemas/aist.schema.json#/$defs/VersionReview"
+          },
+          "headers": null
+        }
+      },
+      "errors": [
+        "revision_conflict",
+        "validation_failed",
+        "idempotency_conflict"
+      ],
+      "idempotency": true
+    },
+    "requestExport": {
+      "method": "POST",
+      "path": "/v1/projects/{project_id}/artifacts/{artifact_id}/versions/{version_id}/exports",
+      "path_parameters": {
+        "$ref": "schemas/aist.schema.json#/$defs/PathProjectArtifactVersion"
+      },
+      "query": null,
+      "headers": {
+        "$ref": "schemas/aist.schema.json#/$defs/WriteHeaders"
+      },
+      "request": {
+        "content_type": "application/json",
+        "schema": {
+          "$ref": "schemas/aist.schema.json#/$defs/CreateExport"
+        },
+        "json_part": null,
+        "binary_part": null
+      },
+      "responses": {
+        "202": {
+          "content_type": "application/json",
+          "schema": {
+            "$ref": "schemas/aist.schema.json#/$defs/Export"
+          },
+          "headers": null
+        },
+        "200": {
+          "content_type": "application/json",
+          "schema": {
+            "$ref": "schemas/aist.schema.json#/$defs/Export"
+          },
+          "headers": null
+        }
+      },
+      "errors": [
+        "revision_conflict",
+        "unsupported_result_type",
+        "unsupported_format",
+        "incompatible_template",
+        "acceptance_required",
+        "validation_failed",
+        "export_missing",
+        "export_corrupt",
+        "outcome_unknown",
+        "idempotency_conflict"
+      ],
+      "idempotency": true
+    },
+    "listExports": {
+      "method": "GET",
+      "path": "/v1/projects/{project_id}/artifacts/{artifact_id}/versions/{version_id}/exports",
+      "path_parameters": {
+        "$ref": "schemas/aist.schema.json#/$defs/PathProjectArtifactVersion"
+      },
+      "query": {
+        "$ref": "schemas/aist.schema.json#/$defs/ListQuery"
+      },
+      "headers": null,
+      "request": null,
+      "responses": {
+        "200": {
+          "content_type": "application/json",
+          "schema": {
+            "$ref": "schemas/aist.schema.json#/$defs/ExportPage"
+          },
+          "headers": null
+        }
+      },
+      "errors": [],
+      "idempotency": false
+    },
+    "getExport": {
+      "method": "GET",
+      "path": "/v1/projects/{project_id}/exports/{export_id}",
+      "path_parameters": {
+        "$ref": "schemas/aist.schema.json#/$defs/PathProjectExport"
+      },
+      "query": null,
+      "headers": null,
+      "request": null,
+      "responses": {
+        "200": {
+          "content_type": "application/json",
+          "schema": {
+            "$ref": "schemas/aist.schema.json#/$defs/Export"
+          },
+          "headers": null
+        }
+      },
+      "errors": [],
+      "idempotency": false
+    },
+    "downloadExport": {
+      "method": "GET",
+      "path": "/v1/projects/{project_id}/exports/{export_id}/file",
+      "path_parameters": {
+        "$ref": "schemas/aist.schema.json#/$defs/PathProjectExport"
+      },
+      "query": null,
+      "headers": null,
+      "request": null,
+      "responses": {
+        "200": {
+          "content_type": "application/octet-stream",
+          "schema": null,
+          "headers": {
+            "$ref": "schemas/aist.schema.json#/$defs/BinaryHeaders"
+          }
+        }
+      },
+      "errors": [
+        "export_not_ready",
+        "export_missing",
+        "export_corrupt",
+        "outcome_unknown"
+      ],
+      "idempotency": false
+    },
+    "getVersionById": {
+      "method": "GET",
+      "path": "/v1/projects/{project_id}/artifact-versions/{version_id}",
+      "path_parameters": {
+        "$ref": "schemas/aist.schema.json#/$defs/PathProjectVersion"
+      },
+      "query": null,
+      "headers": null,
+      "request": null,
+      "responses": {
+        "200": {
+          "content_type": "application/json",
+          "schema": {
+            "$ref": "schemas/aist.schema.json#/$defs/VersionView"
+          },
+          "headers": null
+        }
+      },
+      "errors": [],
+      "idempotency": false
+    },
+    "searchEvidence": {
+      "method": "POST",
+      "path": "/v1/projects/{project_id}/search",
+      "path_parameters": {
+        "$ref": "schemas/aist.schema.json#/$defs/PathProject"
+      },
+      "query": null,
+      "headers": null,
+      "request": {
+        "content_type": "application/json",
+        "schema": {
+          "$ref": "schemas/aist.schema.json#/$defs/SearchEvidenceArgs"
+        },
+        "json_part": null,
+        "binary_part": null
+      },
+      "responses": {
+        "200": {
+          "content_type": "application/json",
+          "schema": {
+            "$ref": "schemas/aist.schema.json#/$defs/SearchEvidenceResult"
+          },
+          "headers": null
+        }
+      },
+      "errors": [
+        "embedding_unavailable",
+        "embedding_rate_limited",
+        "embedding_invalid_response",
+        "search_index_unavailable",
+        "search_not_indexed",
+        "sample_not_evidence",
+        "resource_not_found",
+        "validation_error",
+        "budget_exceeded"
+      ],
+      "idempotency": false
+    },
+    "getMoex": {
+      "method": "GET",
+      "path": "/v1/projects/{project_id}/moex/wush",
+      "path_parameters": {
+        "$ref": "schemas/aist.schema.json#/$defs/PathProject"
+      },
+      "query": null,
+      "headers": null,
+      "request": null,
+      "responses": {
+        "200": {
+          "content_type": "application/json",
+          "schema": {
+            "$ref": "schemas/aist.schema.json#/$defs/MoexStatus"
+          },
+          "headers": null
+        }
+      },
+      "errors": [],
+      "idempotency": false
+    },
+    "updateMoex": {
+      "method": "POST",
+      "path": "/v1/projects/{project_id}/moex/wush",
+      "path_parameters": {
+        "$ref": "schemas/aist.schema.json#/$defs/PathProject"
+      },
+      "query": null,
+      "headers": {
+        "$ref": "schemas/aist.schema.json#/$defs/WriteHeaders"
+      },
+      "request": {
+        "content_type": "application/json",
+        "schema": {
+          "$ref": "schemas/aist.schema.json#/$defs/MoexRequest"
+        },
+        "json_part": null,
+        "binary_part": null
+      },
+      "responses": {
+        "200": {
+          "content_type": "application/json",
+          "schema": {
+            "$ref": "schemas/aist.schema.json#/$defs/MoexUpdate"
+          },
+          "headers": null
+        }
+      },
+      "errors": [
+        "moex_unavailable",
+        "moex_invalid_response",
+        "moex_identity_mismatch",
+        "moex_busy",
+        "outcome_unknown",
+        "idempotency_conflict"
+      ],
+      "idempotency": true
+    },
+    "login": {
+      "method": "POST",
+      "path": "/v1/auth/login",
+      "path_parameters": null,
+      "query": null,
+      "headers": null,
+      "request": {
+        "content_type": "application/json",
+        "schema": {
+          "$ref": "schemas/aist.schema.json#/$defs/LoginRequest"
+        },
+        "json_part": null,
+        "binary_part": null
+      },
+      "responses": {
+        "200": {
+          "content_type": "application/json",
+          "schema": {
+            "$ref": "schemas/aist.schema.json#/$defs/LoginResponse"
+          },
+          "headers": null
+        }
+      },
+      "errors": [
+        "invalid_credentials",
+        "login_rate_limited",
+        "too_large"
+      ],
+      "idempotency": false
+    },
+    "logout": {
+      "method": "POST",
+      "path": "/v1/auth/logout",
+      "path_parameters": null,
+      "query": null,
+      "headers": null,
+      "request": {
+        "content_type": "application/json",
+        "schema": {
+          "$ref": "schemas/aist.schema.json#/$defs/LogoutRequest"
+        },
+        "json_part": null,
+        "binary_part": null
+      },
+      "responses": {
+        "200": {
+          "content_type": "application/json",
+          "schema": {
+            "$ref": "schemas/aist.schema.json#/$defs/LogoutResponse"
+          },
+          "headers": null
+        }
+      },
+      "errors": [
+        "too_large"
+      ],
+      "idempotency": false
+    },
+    "workspaceIdentity": {
+      "method": "GET",
+      "path": "/v1/workspace",
+      "path_parameters": null,
+      "query": null,
+      "headers": null,
+      "request": null,
+      "responses": {
+        "200": {
+          "content_type": "application/json",
+          "schema": {
+            "$ref": "schemas/aist.schema.json#/$defs/WorkspaceIdentity"
+          },
+          "headers": null
+        }
+      },
+      "errors": [],
+      "idempotency": false
+    },
+    "workspaceFolders": {
+      "method": "GET",
+      "path": "/v1/workspace/projects",
+      "path_parameters": null,
+      "query": {
+        "$ref": "schemas/aist.schema.json#/$defs/FolderQuery"
+      },
+      "headers": null,
+      "request": null,
+      "responses": {
+        "200": {
+          "content_type": "application/json",
+          "schema": {
+            "$ref": "schemas/aist.schema.json#/$defs/FolderPage"
+          },
+          "headers": null
+        }
+      },
+      "errors": [
+        "cursor_invalid"
+      ],
+      "idempotency": false
+    },
+    "workspaceChats": {
+      "method": "GET",
+      "path": "/v1/workspace/chats",
+      "path_parameters": null,
+      "query": {
+        "$ref": "schemas/aist.schema.json#/$defs/RecentChatQuery"
+      },
+      "headers": null,
+      "request": null,
+      "responses": {
+        "200": {
+          "content_type": "application/json",
+          "schema": {
+            "$ref": "schemas/aist.schema.json#/$defs/RecentChatPage"
+          },
+          "headers": null
+        }
+      },
+      "errors": [
+        "cursor_invalid"
+      ],
+      "idempotency": false
+    },
+    "openWorkspaceChat": {
+      "method": "GET",
+      "path": "/v1/workspace/chats/{conversation_id}",
+      "path_parameters": {
+        "$ref": "schemas/aist.schema.json#/$defs/PathChat"
+      },
+      "query": null,
+      "headers": null,
+      "request": null,
+      "responses": {
+        "200": {
+          "content_type": "application/json",
+          "schema": {
+            "$ref": "schemas/aist.schema.json#/$defs/OpenedChat"
+          },
+          "headers": null
+        }
+      },
+      "errors": [],
+      "idempotency": false
+    },
+    "changeNavigation": {
+      "method": "POST",
+      "path": "/v1/workspace/actions",
+      "path_parameters": null,
+      "query": null,
+      "headers": {
+        "$ref": "schemas/aist.schema.json#/$defs/WriteHeaders"
+      },
+      "request": {
+        "content_type": "application/json",
+        "schema": {
+          "$ref": "schemas/aist.schema.json#/$defs/NavigationAction"
+        },
+        "json_part": null,
+        "binary_part": null
+      },
+      "responses": {
+        "200": {
+          "content_type": "application/json",
+          "schema": {
+            "$ref": "schemas/aist.schema.json#/$defs/NavigationResult"
+          },
+          "headers": null
+        }
+      },
+      "errors": [
+        "idempotency_conflict",
+        "revision_conflict"
+      ],
+      "idempotency": true
+    },
+    "recentWorkspacePdfs": {
+      "method": "GET",
+      "path": "/v1/workspace/projects/{project_id}/recent-pdfs",
+      "path_parameters": {
+        "$ref": "schemas/aist.schema.json#/$defs/PathProject"
+      },
+      "query": null,
+      "headers": null,
+      "request": null,
+      "responses": {
+        "200": {
+          "content_type": "application/json",
+          "schema": {
+            "$ref": "schemas/aist.schema.json#/$defs/RecentPdfPage"
+          },
+          "headers": null
+        }
+      },
+      "errors": [],
+      "idempotency": false
+    },
+    "readAsoView": {
+      "method": "GET",
+      "path": "/v1/projects/{project_id}/artifact-versions/{version_id}/aso",
+      "path_parameters": {
+        "$ref": "schemas/aist.schema.json#/$defs/PathProjectVersion"
+      },
+      "query": null,
+      "headers": null,
+      "request": null,
+      "responses": {
+        "200": {
+          "content_type": "application/json",
+          "schema": {
+            "$ref": "schemas/aist.schema.json#/$defs/AsoView"
+          },
+          "headers": null
+        }
+      },
+      "errors": [
+        "unsupported_result_type"
+      ],
+      "idempotency": false
+    },
+    "readSourcePreview": {
+      "method": "GET",
+      "path": "/v1/projects/{project_id}/source-versions/{source_version_id}/preview",
+      "path_parameters": {
+        "$ref": "schemas/aist.schema.json#/$defs/PathProjectSourceVersion"
+      },
+      "query": {
+        "$ref": "schemas/aist.schema.json#/$defs/SourcePageQuery"
+      },
+      "headers": null,
+      "request": null,
+      "responses": {
+        "200": {
+          "content_type": "image/jpeg",
+          "schema": null,
+          "headers": null
+        }
+      },
+      "errors": [
+        "source_not_ready"
+      ],
+      "idempotency": false
+    },
+    "listProjectMaterials": {
+      "method": "GET",
+      "path": "/v1/workspace/projects/{project_id}/materials",
+      "path_parameters": {
+        "$ref": "schemas/aist.schema.json#/$defs/PathProject"
+      },
+      "query": {
+        "$ref": "schemas/aist.schema.json#/$defs/MaterialQuery"
+      },
+      "headers": null,
+      "request": null,
+      "responses": {
+        "200": {
+          "content_type": "application/json",
+          "schema": {
+            "$ref": "schemas/aist.schema.json#/$defs/MaterialOptions"
+          },
+          "headers": null
+        }
+      },
+      "errors": [],
+      "idempotency": false
+    },
+    "listEditProposals": {
+      "method": "GET",
+      "path": "/v1/projects/{project_id}/conversations/{conversation_id}/edit-proposals",
+      "path_parameters": {
+        "$ref": "schemas/aist.schema.json#/$defs/PathProjectConversation"
+      },
+      "query": {
+        "$ref": "schemas/aist.schema.json#/$defs/ListQuery"
+      },
+      "headers": null,
+      "request": null,
+      "responses": {
+        "200": {
+          "content_type": "application/json",
+          "schema": {
+            "$ref": "schemas/aist.schema.json#/$defs/EditProposalPage"
+          },
+          "headers": null
+        }
+      },
+      "errors": [],
+      "idempotency": false
+    },
+    "prepareEdit": {
+      "method": "POST",
+      "path": "/v1/projects/{project_id}/conversations/{conversation_id}/edit-proposals",
+      "path_parameters": {
+        "$ref": "schemas/aist.schema.json#/$defs/PathProjectConversation"
+      },
+      "query": null,
+      "headers": {
+        "$ref": "schemas/aist.schema.json#/$defs/WriteHeaders"
+      },
+      "request": {
+        "content_type": "application/json",
+        "schema": {
+          "$ref": "schemas/aist.schema.json#/$defs/PrepareEdit"
+        },
+        "json_part": null,
+        "binary_part": null
+      },
+      "responses": {
+        "200": {
+          "content_type": "application/json",
+          "schema": {
+            "$ref": "schemas/aist.schema.json#/$defs/EditPlan"
+          },
+          "headers": null
+        }
+      },
+      "errors": [
+        "revision_conflict",
+        "idempotency_conflict"
+      ],
+      "idempotency": true
+    },
+    "decideEdit": {
+      "method": "POST",
+      "path": "/v1/projects/{project_id}/conversations/{conversation_id}/edit-proposals/{proposal_id}",
+      "path_parameters": {
+        "$ref": "schemas/aist.schema.json#/$defs/PathChatProposal"
+      },
+      "query": null,
+      "headers": {
+        "$ref": "schemas/aist.schema.json#/$defs/WriteHeaders"
+      },
+      "request": {
+        "content_type": "application/json",
+        "schema": {
+          "$ref": "schemas/aist.schema.json#/$defs/EditDecision"
+        },
+        "json_part": null,
+        "binary_part": null
+      },
+      "responses": {
+        "200": {
+          "content_type": "application/json",
+          "schema": {
+            "$ref": "schemas/aist.schema.json#/$defs/EditProposal"
+          },
+          "headers": null
+        }
+      },
+      "errors": [
+        "revision_conflict",
+        "idempotency_conflict"
+      ],
+      "idempotency": true
+    }
+  }
+}

@@ -1,0 +1,1688 @@
+{
+  "description": "Спроектированная цепочка и альтернативные исходы. Для upload показана JSON-часть metadata. Размер и SHA вымышленного PDF служат примерами полей. Байты PDF и файлов выпуска не поставляются.",
+  "cases": [
+    {
+      "id": "01-project",
+      "operation": "createProject",
+      "path": {},
+      "query": {},
+      "headers": {
+        "Idempotency-Key": "project-001"
+      },
+      "request": {
+        "name": "Контрольный проект «Спектромер»"
+      },
+      "response": {
+        "status": 201,
+        "body": {
+          "$ref": "entities.json#/records/project/value"
+        },
+        "headers": {}
+      },
+      "future_assertions": [
+        "A01"
+      ]
+    },
+    {
+      "id": "02-upload",
+      "operation": "uploadSource",
+      "path": {
+        "project_id": "prj_demo"
+      },
+      "query": {},
+      "headers": {
+        "Idempotency-Key": "upload-001"
+      },
+      "request": {
+        "title": "Спектромер, сводка квартальных продаж",
+        "expected_revision": 0
+      },
+      "response": {
+        "status": 201,
+        "body": {
+          "$ref": "entities.json#/records/upload_receipt/value"
+        },
+        "headers": {}
+      },
+      "future_assertions": [
+        "A02"
+      ]
+    },
+    {
+      "id": "03-source-ready",
+      "operation": "getSourceVersion",
+      "path": {
+        "project_id": "prj_demo",
+        "source_version_id": "sv_spectromer-v1"
+      },
+      "query": {},
+      "headers": {},
+      "request": null,
+      "response": {
+        "status": 200,
+        "body": {
+          "$ref": "entities.json#/records/source_ready/value"
+        },
+        "headers": {}
+      },
+      "future_assertions": [
+        "A02"
+      ]
+    },
+    {
+      "id": "04-conversation",
+      "operation": "createConversation",
+      "path": {
+        "project_id": "prj_demo"
+      },
+      "query": {},
+      "headers": {
+        "Idempotency-Key": "conversation-001"
+      },
+      "request": {
+        "title": "Анализ источника"
+      },
+      "response": {
+        "status": 201,
+        "body": {
+          "$ref": "entities.json#/records/conversation/value"
+        },
+        "headers": {}
+      },
+      "future_assertions": []
+    },
+    {
+      "id": "05-question",
+      "operation": "submitMessage",
+      "path": {
+        "project_id": "prj_demo",
+        "conversation_id": "conv_demo"
+      },
+      "query": {},
+      "headers": {
+        "Idempotency-Key": "question-001"
+      },
+      "request": {
+        "$ref": "entities.json#/records/question_request/value"
+      },
+      "response": {
+        "status": 202,
+        "body": {
+          "$ref": "entities.json#/records/question_submission/value"
+        },
+        "headers": {}
+      },
+      "future_assertions": [
+        "A03",
+        "A11"
+      ]
+    },
+    {
+      "id": "06-question-result",
+      "operation": "getRun",
+      "path": {
+        "project_id": "prj_demo",
+        "run_id": "run_question"
+      },
+      "query": {},
+      "headers": {},
+      "request": null,
+      "response": {
+        "status": 200,
+        "body": {
+          "$ref": "entities.json#/records/question_completed/value"
+        },
+        "headers": {}
+      },
+      "future_assertions": [
+        "A04",
+        "A11"
+      ]
+    },
+    {
+      "id": "07-answer",
+      "operation": "getVersionById",
+      "path": {
+        "project_id": "prj_demo",
+        "version_id": "av_answer-v1"
+      },
+      "query": {},
+      "headers": {},
+      "request": null,
+      "response": {
+        "status": 200,
+        "body": {
+          "$ref": "entities.json#/records/answer_view/value"
+        },
+        "headers": {}
+      },
+      "future_assertions": [
+        "A11"
+      ]
+    },
+    {
+      "id": "08-events",
+      "operation": "getRunEvents",
+      "path": {
+        "project_id": "prj_demo",
+        "run_id": "run_question"
+      },
+      "query": {
+        "after_seq": 0,
+        "limit": 100
+      },
+      "headers": {},
+      "request": null,
+      "response": {
+        "status": 200,
+        "body": {
+          "$ref": "entities.json#/records/question_events/value"
+        },
+        "headers": {}
+      },
+      "future_assertions": [
+        "A06"
+      ]
+    },
+    {
+      "id": "09-reconnect",
+      "operation": "getRunEvents",
+      "path": {
+        "project_id": "prj_demo",
+        "run_id": "run_question"
+      },
+      "query": {
+        "after_seq": 3
+      },
+      "headers": {},
+      "request": null,
+      "response": {
+        "status": 200,
+        "body": {
+          "$ref": "entities.json#/records/reconnected_events/value"
+        },
+        "headers": {}
+      },
+      "future_assertions": [
+        "A06"
+      ]
+    },
+    {
+      "id": "10-sse",
+      "operation": "streamRunEvents",
+      "path": {
+        "project_id": "prj_demo",
+        "run_id": "run_question"
+      },
+      "query": {},
+      "headers": {
+        "Last-Event-ID": "run_question:3"
+      },
+      "request": null,
+      "response": {
+        "status": 200,
+        "body": {
+          "$ref": "entities.json#/records/sse_event/value"
+        },
+        "headers": {}
+      },
+      "future_assertions": [
+        "A06"
+      ]
+    },
+    {
+      "id": "11-repeat",
+      "operation": "submitMessage",
+      "path": {
+        "project_id": "prj_demo",
+        "conversation_id": "conv_demo"
+      },
+      "query": {},
+      "headers": {
+        "Idempotency-Key": "question-001"
+      },
+      "request": {
+        "$ref": "entities.json#/records/question_request/value"
+      },
+      "response": {
+        "status": 200,
+        "body": {
+          "$ref": "entities.json#/records/question_repeat/value"
+        },
+        "headers": {}
+      },
+      "future_assertions": [
+        "A03"
+      ]
+    },
+    {
+      "id": "12-note",
+      "operation": "submitMessage",
+      "path": {
+        "project_id": "prj_demo",
+        "conversation_id": "conv_demo"
+      },
+      "query": {},
+      "headers": {
+        "Idempotency-Key": "note-001"
+      },
+      "request": {
+        "$ref": "entities.json#/records/note_request/value"
+      },
+      "response": {
+        "status": 202,
+        "body": {
+          "$ref": "entities.json#/records/note_submission/value"
+        },
+        "headers": {}
+      },
+      "future_assertions": [
+        "A07"
+      ]
+    },
+    {
+      "id": "13-note-result",
+      "operation": "getVersion",
+      "path": {
+        "project_id": "prj_demo",
+        "artifact_id": "art_note",
+        "version_id": "av_note-v1"
+      },
+      "query": {},
+      "headers": {},
+      "request": null,
+      "response": {
+        "status": 200,
+        "body": {
+          "$ref": "entities.json#/records/note_v1_view/value"
+        },
+        "headers": {}
+      },
+      "future_assertions": [
+        "A04"
+      ]
+    },
+    {
+      "id": "14-accept-v1",
+      "operation": "acceptVersion",
+      "path": {
+        "project_id": "prj_demo",
+        "artifact_id": "art_note",
+        "version_id": "av_note-v1"
+      },
+      "query": {},
+      "headers": {
+        "Idempotency-Key": "accept-v1-001"
+      },
+      "request": {
+        "expected_revision": 2,
+        "content_sha256": "0ac17043a611b014623a07a8782a90239a0d66378d20f9e811da871f12a1245f",
+        "acknowledge_unchecked_semantics": true
+      },
+      "response": {
+        "status": 200,
+        "body": {
+          "$ref": "entities.json#/records/note_v1_accepted/value"
+        },
+        "headers": {}
+      },
+      "future_assertions": [
+        "A10"
+      ]
+    },
+    {
+      "id": "15-edit",
+      "operation": "saveVersion",
+      "path": {
+        "project_id": "prj_demo",
+        "artifact_id": "art_note"
+      },
+      "query": {},
+      "headers": {
+        "Idempotency-Key": "edit-001"
+      },
+      "request": {
+        "expected_revision": 1,
+        "parent_version_id": "av_note-v1",
+        "payload": {
+          "result_type": "analytical_note",
+          "schema_version": "1.0.0",
+          "content": {
+            "title": "Квартальная выручка «Спектромера»",
+            "audience": "Инвестиционный аналитик",
+            "sections": [
+              {
+                "section_id": "sec_revenue",
+                "title": "Показатели",
+                "blocks": [
+                  {
+                    "block_id": "block_intro",
+                    "kind": "paragraph",
+                    "claim": {
+                      "text": "За I квартал 2025 года выручка составила 542 млн рублей.",
+                      "origin": "source_fact",
+                      "fact_refs": [
+                        {
+                          "source_version_id": "sv_spectromer-v1",
+                          "fact_id": "fact_current"
+                        }
+                      ],
+                      "calculation_ids": []
+                    }
+                  },
+                  {
+                    "block_id": "block_table",
+                    "kind": "table",
+                    "caption": "Опубликованные показатели и расчет",
+                    "rows": [
+                      {
+                        "row_id": "row_previous",
+                        "label": "Выручка",
+                        "period_label": "1Q24",
+                        "amount": {
+                          "value": "475",
+                          "unit": "money",
+                          "scale": "1000000",
+                          "currency": "RUB"
+                        },
+                        "fact_refs": [
+                          {
+                            "source_version_id": "sv_spectromer-v1",
+                            "fact_id": "fact_previous"
+                          }
+                        ],
+                        "calculation_ids": []
+                      },
+                      {
+                        "row_id": "row_current",
+                        "label": "Выручка",
+                        "period_label": "1Q25",
+                        "amount": {
+                          "value": "542",
+                          "unit": "money",
+                          "scale": "1000000",
+                          "currency": "RUB"
+                        },
+                        "fact_refs": [
+                          {
+                            "source_version_id": "sv_spectromer-v1",
+                            "fact_id": "fact_current"
+                          }
+                        ],
+                        "calculation_ids": []
+                      },
+                      {
+                        "row_id": "row_growth",
+                        "label": "Рост",
+                        "period_label": "1Q25 к 1Q24",
+                        "amount": {
+                          "value": "14.11",
+                          "unit": "percent",
+                          "scale": "1",
+                          "currency": null
+                        },
+                        "fact_refs": [],
+                        "calculation_ids": [
+                          "calc_growth"
+                        ]
+                      }
+                    ]
+                  }
+                ]
+              },
+              {
+                "section_id": "sec_limits",
+                "title": "Ограничения",
+                "blocks": [
+                  {
+                    "block_id": "block_limits",
+                    "kind": "paragraph",
+                    "claim": {
+                      "text": "Сводка не уточняет стандарт и периметр отчетности. Суммы округлены.",
+                      "origin": "inference",
+                      "fact_refs": [
+                        {
+                          "source_version_id": "sv_spectromer-v1",
+                          "fact_id": "fact_current"
+                        }
+                      ],
+                      "calculation_ids": []
+                    }
+                  },
+                  {
+                    "block_id": "block_human",
+                    "kind": "paragraph",
+                    "claim": {
+                      "text": "Для кредитного комитета требуется отдельная проверка устойчивости модели финансирования.",
+                      "origin": "human_editorial",
+                      "fact_refs": [],
+                      "calculation_ids": []
+                    }
+                  }
+                ]
+              }
+            ]
+          }
+        }
+      },
+      "response": {
+        "status": 201,
+        "body": {
+          "$ref": "entities.json#/records/note_v2_view/value"
+        },
+        "headers": {}
+      },
+      "future_assertions": [
+        "A09",
+        "A10"
+      ]
+    },
+    {
+      "id": "16-edit-repeat",
+      "operation": "saveVersion",
+      "path": {
+        "project_id": "prj_demo",
+        "artifact_id": "art_note"
+      },
+      "query": {},
+      "headers": {
+        "Idempotency-Key": "edit-001"
+      },
+      "request": {
+        "expected_revision": 1,
+        "parent_version_id": "av_note-v1",
+        "payload": {
+          "result_type": "analytical_note",
+          "schema_version": "1.0.0",
+          "content": {
+            "title": "Квартальная выручка «Спектромера»",
+            "audience": "Инвестиционный аналитик",
+            "sections": [
+              {
+                "section_id": "sec_revenue",
+                "title": "Показатели",
+                "blocks": [
+                  {
+                    "block_id": "block_intro",
+                    "kind": "paragraph",
+                    "claim": {
+                      "text": "За I квартал 2025 года выручка составила 542 млн рублей.",
+                      "origin": "source_fact",
+                      "fact_refs": [
+                        {
+                          "source_version_id": "sv_spectromer-v1",
+                          "fact_id": "fact_current"
+                        }
+                      ],
+                      "calculation_ids": []
+                    }
+                  },
+                  {
+                    "block_id": "block_table",
+                    "kind": "table",
+                    "caption": "Опубликованные показатели и расчет",
+                    "rows": [
+                      {
+                        "row_id": "row_previous",
+                        "label": "Выручка",
+                        "period_label": "1Q24",
+                        "amount": {
+                          "value": "475",
+                          "unit": "money",
+                          "scale": "1000000",
+                          "currency": "RUB"
+                        },
+                        "fact_refs": [
+                          {
+                            "source_version_id": "sv_spectromer-v1",
+                            "fact_id": "fact_previous"
+                          }
+                        ],
+                        "calculation_ids": []
+                      },
+                      {
+                        "row_id": "row_current",
+                        "label": "Выручка",
+                        "period_label": "1Q25",
+                        "amount": {
+                          "value": "542",
+                          "unit": "money",
+                          "scale": "1000000",
+                          "currency": "RUB"
+                        },
+                        "fact_refs": [
+                          {
+                            "source_version_id": "sv_spectromer-v1",
+                            "fact_id": "fact_current"
+                          }
+                        ],
+                        "calculation_ids": []
+                      },
+                      {
+                        "row_id": "row_growth",
+                        "label": "Рост",
+                        "period_label": "1Q25 к 1Q24",
+                        "amount": {
+                          "value": "14.11",
+                          "unit": "percent",
+                          "scale": "1",
+                          "currency": null
+                        },
+                        "fact_refs": [],
+                        "calculation_ids": [
+                          "calc_growth"
+                        ]
+                      }
+                    ]
+                  }
+                ]
+              },
+              {
+                "section_id": "sec_limits",
+                "title": "Ограничения",
+                "blocks": [
+                  {
+                    "block_id": "block_limits",
+                    "kind": "paragraph",
+                    "claim": {
+                      "text": "Сводка не уточняет стандарт и периметр отчетности. Суммы округлены.",
+                      "origin": "inference",
+                      "fact_refs": [
+                        {
+                          "source_version_id": "sv_spectromer-v1",
+                          "fact_id": "fact_current"
+                        }
+                      ],
+                      "calculation_ids": []
+                    }
+                  },
+                  {
+                    "block_id": "block_human",
+                    "kind": "paragraph",
+                    "claim": {
+                      "text": "Для кредитного комитета требуется отдельная проверка устойчивости модели финансирования.",
+                      "origin": "human_editorial",
+                      "fact_refs": [],
+                      "calculation_ids": []
+                    }
+                  }
+                ]
+              }
+            ]
+          }
+        }
+      },
+      "response": {
+        "status": 200,
+        "body": {
+          "$ref": "entities.json#/records/note_v2_view/value"
+        },
+        "headers": {}
+      },
+      "future_assertions": [
+        "A03",
+        "A09"
+      ]
+    },
+    {
+      "id": "17-accept-v2",
+      "operation": "acceptVersion",
+      "path": {
+        "project_id": "prj_demo",
+        "artifact_id": "art_note",
+        "version_id": "av_note-v2"
+      },
+      "query": {},
+      "headers": {
+        "Idempotency-Key": "accept-v2-001"
+      },
+      "request": {
+        "expected_revision": 2,
+        "content_sha256": "920ad2747e39cab4de2b92941a53a2f6d1919f97374a875b1a0236d55b85550d",
+        "acknowledge_unchecked_semantics": true
+      },
+      "response": {
+        "status": 200,
+        "body": {
+          "$ref": "entities.json#/records/note_v2_accepted/value"
+        },
+        "headers": {}
+      },
+      "future_assertions": [
+        "A10"
+      ]
+    },
+    {
+      "id": "18-export",
+      "operation": "requestExport",
+      "path": {
+        "project_id": "prj_demo",
+        "artifact_id": "art_note",
+        "version_id": "av_note-v2"
+      },
+      "query": {},
+      "headers": {
+        "Idempotency-Key": "export-docx-001"
+      },
+      "request": {
+        "expected_revision": 3,
+        "format": "docx",
+        "template_version": "aist-note.v1",
+        "renderer_version": "aist-docx.v1",
+        "settings": {
+          "locale": "ru-RU",
+          "paper": "A4",
+          "release_mode": "accepted",
+          "theme": "standard"
+        }
+      },
+      "response": {
+        "status": 202,
+        "body": {
+          "$ref": "entities.json#/records/docx_queued/value"
+        },
+        "headers": {}
+      },
+      "future_assertions": [
+        "A12"
+      ]
+    },
+    {
+      "id": "19-export-ready",
+      "operation": "getExport",
+      "path": {
+        "project_id": "prj_demo",
+        "export_id": "exp_docx"
+      },
+      "query": {},
+      "headers": {},
+      "request": null,
+      "response": {
+        "status": 200,
+        "body": {
+          "$ref": "entities.json#/records/docx/value"
+        },
+        "headers": {}
+      },
+      "future_assertions": [
+        "A12"
+      ]
+    },
+    {
+      "id": "20-export-repeat",
+      "operation": "requestExport",
+      "path": {
+        "project_id": "prj_demo",
+        "artifact_id": "art_note",
+        "version_id": "av_note-v2"
+      },
+      "query": {},
+      "headers": {
+        "Idempotency-Key": "export-docx-001"
+      },
+      "request": {
+        "expected_revision": 3,
+        "format": "docx",
+        "template_version": "aist-note.v1",
+        "renderer_version": "aist-docx.v1",
+        "settings": {
+          "locale": "ru-RU",
+          "paper": "A4",
+          "release_mode": "accepted",
+          "theme": "standard"
+        }
+      },
+      "response": {
+        "status": 200,
+        "body": {
+          "$ref": "entities.json#/records/docx/value"
+        },
+        "headers": {}
+      },
+      "future_assertions": [
+        "A12"
+      ]
+    },
+    {
+      "id": "21-download",
+      "operation": "downloadExport",
+      "path": {
+        "project_id": "prj_demo",
+        "export_id": "exp_docx"
+      },
+      "query": {},
+      "headers": {},
+      "request": null,
+      "response": {
+        "status": 200,
+        "body": null,
+        "headers": {
+          "Content-Type": "application/vnd.openxmlformats-officedocument.wordprocessingml.document",
+          "Content-Disposition": "attachment; filename=\"spectromer-quarterly.docx\"",
+          "ETag": "\"sha256:710a712480369e0f63d91e4ac804ba90cbd5518091c8fb375a25899f34b68e21\"",
+          "Content-Length": 1024
+        }
+      },
+      "future_assertions": [
+        "A13"
+      ]
+    },
+    {
+      "id": "22-download-again",
+      "operation": "downloadExport",
+      "path": {
+        "project_id": "prj_demo",
+        "export_id": "exp_docx"
+      },
+      "query": {},
+      "headers": {},
+      "request": null,
+      "response": {
+        "status": 200,
+        "body": null,
+        "headers": {
+          "Content-Type": "application/vnd.openxmlformats-officedocument.wordprocessingml.document",
+          "Content-Disposition": "attachment; filename=\"spectromer-quarterly.docx\"",
+          "ETag": "\"sha256:710a712480369e0f63d91e4ac804ba90cbd5518091c8fb375a25899f34b68e21\"",
+          "Content-Length": 1024
+        }
+      },
+      "future_assertions": [
+        "A13"
+      ]
+    },
+    {
+      "id": "23-pdf",
+      "operation": "requestExport",
+      "path": {
+        "project_id": "prj_demo",
+        "artifact_id": "art_note",
+        "version_id": "av_note-v2"
+      },
+      "query": {},
+      "headers": {
+        "Idempotency-Key": "export-pdf-001"
+      },
+      "request": {
+        "expected_revision": 3,
+        "format": "pdf",
+        "template_version": "aist-note.v1",
+        "renderer_version": "aist-pdf.v1",
+        "settings": {
+          "locale": "ru-RU",
+          "paper": "A4",
+          "release_mode": "accepted",
+          "theme": "standard"
+        }
+      },
+      "response": {
+        "status": 202,
+        "body": {
+          "$ref": "entities.json#/records/pdf/value"
+        },
+        "headers": {}
+      },
+      "future_assertions": [
+        "A12"
+      ]
+    },
+    {
+      "id": "24-theme",
+      "operation": "requestExport",
+      "path": {
+        "project_id": "prj_demo",
+        "artifact_id": "art_note",
+        "version_id": "av_note-v2"
+      },
+      "query": {},
+      "headers": {
+        "Idempotency-Key": "export-theme-001"
+      },
+      "request": {
+        "expected_revision": 3,
+        "format": "pdf",
+        "template_version": "aist-note.v1",
+        "renderer_version": "aist-pdf.v1",
+        "settings": {
+          "locale": "ru-RU",
+          "paper": "A4",
+          "release_mode": "accepted",
+          "theme": "compact"
+        }
+      },
+      "response": {
+        "status": 202,
+        "body": {
+          "$ref": "entities.json#/records/pdf-compact/value"
+        },
+        "headers": {}
+      },
+      "future_assertions": [
+        "A12"
+      ]
+    },
+    {
+      "id": "25-continue",
+      "operation": "submitMessage",
+      "path": {
+        "project_id": "prj_demo",
+        "conversation_id": "conv_demo"
+      },
+      "query": {},
+      "headers": {
+        "Idempotency-Key": "continue-001"
+      },
+      "request": {
+        "$ref": "entities.json#/records/continue_request/value"
+      },
+      "response": {
+        "status": 202,
+        "body": {
+          "$ref": "entities.json#/records/continue_submission/value"
+        },
+        "headers": {}
+      },
+      "future_assertions": [
+        "A10",
+        "A16"
+      ]
+    },
+    {
+      "id": "26-continue-result",
+      "operation": "getVersion",
+      "path": {
+        "project_id": "prj_demo",
+        "artifact_id": "art_note",
+        "version_id": "av_note-v3"
+      },
+      "query": {},
+      "headers": {},
+      "request": null,
+      "response": {
+        "status": 200,
+        "body": {
+          "$ref": "entities.json#/records/note_v3_view/value"
+        },
+        "headers": {}
+      },
+      "future_assertions": [
+        "A16"
+      ]
+    },
+    {
+      "id": "key-conflict",
+      "operation": "submitMessage",
+      "path": {
+        "project_id": "prj_demo",
+        "conversation_id": "conv_demo"
+      },
+      "query": {},
+      "headers": {
+        "Idempotency-Key": "question-001"
+      },
+      "request": {
+        "expected_revision": 0,
+        "text": "Другой вопрос.",
+        "source_version_ids": [
+          "sv_spectromer-v1"
+        ],
+        "skill_version_id": "skill_source-answer-v1",
+        "model_profile_version_id": "model_novita-mimo-v1",
+        "requested_result_type": "evidence_answer",
+        "parameters": {
+          "audience": null,
+          "sections": []
+        },
+        "base_version_id": null,
+        "expected_artifact_revision": 0,
+        "requested_export": null
+      },
+      "response": {
+        "status": 409,
+        "body": {
+          "error": {
+            "code": "idempotency_conflict",
+            "message": "Операция не выполнена: idempotency_conflict.",
+            "retryable": false,
+            "run_id": null,
+            "call_id": null,
+            "tool_call_id": null,
+            "expected_revision": null,
+            "current_revision": null
+          },
+          "request_id": "req_key-conflict"
+        },
+        "headers": {}
+      },
+      "future_assertions": [
+        "A03"
+      ]
+    },
+    {
+      "id": "stale-edit",
+      "operation": "saveVersion",
+      "path": {
+        "project_id": "prj_demo",
+        "artifact_id": "art_note"
+      },
+      "query": {},
+      "headers": {
+        "Idempotency-Key": "edit-stale-001"
+      },
+      "request": {
+        "expected_revision": 1,
+        "parent_version_id": "av_note-v1",
+        "payload": {
+          "result_type": "analytical_note",
+          "schema_version": "1.0.0",
+          "content": {
+            "title": "Квартальная выручка «Спектромера»",
+            "audience": "Инвестиционный аналитик",
+            "sections": [
+              {
+                "section_id": "sec_revenue",
+                "title": "Показатели",
+                "blocks": [
+                  {
+                    "block_id": "block_intro",
+                    "kind": "paragraph",
+                    "claim": {
+                      "text": "За I квартал 2025 года выручка составила 542 млн рублей.",
+                      "origin": "source_fact",
+                      "fact_refs": [
+                        {
+                          "source_version_id": "sv_spectromer-v1",
+                          "fact_id": "fact_current"
+                        }
+                      ],
+                      "calculation_ids": []
+                    }
+                  },
+                  {
+                    "block_id": "block_table",
+                    "kind": "table",
+                    "caption": "Опубликованные показатели и расчет",
+                    "rows": [
+                      {
+                        "row_id": "row_previous",
+                        "label": "Выручка",
+                        "period_label": "1Q24",
+                        "amount": {
+                          "value": "475",
+                          "unit": "money",
+                          "scale": "1000000",
+                          "currency": "RUB"
+                        },
+                        "fact_refs": [
+                          {
+                            "source_version_id": "sv_spectromer-v1",
+                            "fact_id": "fact_previous"
+                          }
+                        ],
+                        "calculation_ids": []
+                      },
+                      {
+                        "row_id": "row_current",
+                        "label": "Выручка",
+                        "period_label": "1Q25",
+                        "amount": {
+                          "value": "542",
+                          "unit": "money",
+                          "scale": "1000000",
+                          "currency": "RUB"
+                        },
+                        "fact_refs": [
+                          {
+                            "source_version_id": "sv_spectromer-v1",
+                            "fact_id": "fact_current"
+                          }
+                        ],
+                        "calculation_ids": []
+                      },
+                      {
+                        "row_id": "row_growth",
+                        "label": "Рост",
+                        "period_label": "1Q25 к 1Q24",
+                        "amount": {
+                          "value": "14.11",
+                          "unit": "percent",
+                          "scale": "1",
+                          "currency": null
+                        },
+                        "fact_refs": [],
+                        "calculation_ids": [
+                          "calc_growth"
+                        ]
+                      }
+                    ]
+                  }
+                ]
+              },
+              {
+                "section_id": "sec_limits",
+                "title": "Ограничения",
+                "blocks": [
+                  {
+                    "block_id": "block_limits",
+                    "kind": "paragraph",
+                    "claim": {
+                      "text": "Сводка не уточняет стандарт и периметр отчетности. Суммы округлены.",
+                      "origin": "inference",
+                      "fact_refs": [
+                        {
+                          "source_version_id": "sv_spectromer-v1",
+                          "fact_id": "fact_current"
+                        }
+                      ],
+                      "calculation_ids": []
+                    }
+                  },
+                  {
+                    "block_id": "block_human",
+                    "kind": "paragraph",
+                    "claim": {
+                      "text": "Для кредитного комитета требуется отдельная проверка устойчивости модели финансирования.",
+                      "origin": "human_editorial",
+                      "fact_refs": [],
+                      "calculation_ids": []
+                    }
+                  }
+                ]
+              }
+            ]
+          }
+        }
+      },
+      "response": {
+        "status": 409,
+        "body": {
+          "error": {
+            "code": "revision_conflict",
+            "message": "Версия изменилась. Откройте актуальное состояние.",
+            "retryable": false,
+            "run_id": null,
+            "call_id": null,
+            "tool_call_id": null,
+            "expected_revision": 1,
+            "current_revision": 2
+          },
+          "request_id": "req_stale-edit"
+        },
+        "headers": {}
+      },
+      "future_assertions": [
+        "A09"
+      ]
+    },
+    {
+      "id": "foreign-source",
+      "operation": "submitMessage",
+      "path": {
+        "project_id": "prj_demo",
+        "conversation_id": "conv_demo"
+      },
+      "query": {},
+      "headers": {
+        "Idempotency-Key": "foreign-001"
+      },
+      "request": {
+        "expected_revision": 0,
+        "text": "Назови выручку за 1Q25 и ее рост к 1Q24.",
+        "source_version_ids": [
+          "sv_foreign"
+        ],
+        "skill_version_id": "skill_source-answer-v1",
+        "model_profile_version_id": "model_novita-mimo-v1",
+        "requested_result_type": "evidence_answer",
+        "parameters": {
+          "audience": null,
+          "sections": []
+        },
+        "base_version_id": null,
+        "expected_artifact_revision": 0,
+        "requested_export": null
+      },
+      "response": {
+        "status": 404,
+        "body": {
+          "error": {
+            "code": "resource_not_found",
+            "message": "Ресурс не найден.",
+            "retryable": false,
+            "run_id": null,
+            "call_id": null,
+            "tool_call_id": null,
+            "expected_revision": null,
+            "current_revision": null
+          },
+          "request_id": "req_foreign-source"
+        },
+        "headers": {}
+      },
+      "future_assertions": [
+        "A01"
+      ]
+    },
+    {
+      "id": "foreign-version",
+      "operation": "getVersion",
+      "path": {
+        "project_id": "prj_foreign",
+        "artifact_id": "art_note",
+        "version_id": "av_note-v2"
+      },
+      "query": {},
+      "headers": {},
+      "request": null,
+      "response": {
+        "status": 404,
+        "body": {
+          "error": {
+            "code": "resource_not_found",
+            "message": "Ресурс не найден.",
+            "retryable": false,
+            "run_id": null,
+            "call_id": null,
+            "tool_call_id": null,
+            "expected_revision": null,
+            "current_revision": null
+          },
+          "request_id": "req_foreign-version"
+        },
+        "headers": {}
+      },
+      "future_assertions": [
+        "A01"
+      ]
+    },
+    {
+      "id": "unsupported-type",
+      "operation": "submitMessage",
+      "path": {
+        "project_id": "prj_demo",
+        "conversation_id": "conv_demo"
+      },
+      "query": {},
+      "headers": {
+        "Idempotency-Key": "type-001"
+      },
+      "request": {
+        "expected_revision": 0,
+        "text": "Назови выручку за 1Q25 и ее рост к 1Q24.",
+        "source_version_ids": [
+          "sv_spectromer-v1"
+        ],
+        "skill_version_id": "skill_source-answer-v1",
+        "model_profile_version_id": "model_novita-mimo-v1",
+        "requested_result_type": "presentation",
+        "parameters": {
+          "audience": null,
+          "sections": []
+        },
+        "base_version_id": null,
+        "expected_artifact_revision": 0,
+        "requested_export": null
+      },
+      "response": {
+        "status": 422,
+        "body": {
+          "error": {
+            "code": "unsupported_result_type",
+            "message": "Операция не выполнена: unsupported_result_type.",
+            "retryable": false,
+            "run_id": null,
+            "call_id": null,
+            "tool_call_id": null,
+            "expected_revision": null,
+            "current_revision": null
+          },
+          "request_id": "req_unsupported-type"
+        },
+        "headers": {}
+      },
+      "future_assertions": [
+        "A14"
+      ]
+    },
+    {
+      "id": "future-type",
+      "operation": "submitMessage",
+      "path": {
+        "project_id": "prj_demo",
+        "conversation_id": "conv_demo"
+      },
+      "query": {},
+      "headers": {
+        "Idempotency-Key": "future-001"
+      },
+      "request": {
+        "expected_revision": 0,
+        "text": "Назови выручку за 1Q25 и ее рост к 1Q24.",
+        "source_version_ids": [
+          "sv_spectromer-v1"
+        ],
+        "skill_version_id": "skill_meeting-summary-v1",
+        "model_profile_version_id": "model_novita-mimo-v1",
+        "requested_result_type": "meeting_summary",
+        "parameters": {
+          "audience": null,
+          "sections": []
+        },
+        "base_version_id": null,
+        "expected_artifact_revision": 0,
+        "requested_export": null
+      },
+      "response": {
+        "status": 422,
+        "body": {
+          "error": {
+            "code": "unsupported_result_type",
+            "message": "Операция не выполнена: unsupported_result_type.",
+            "retryable": false,
+            "run_id": null,
+            "call_id": null,
+            "tool_call_id": null,
+            "expected_revision": null,
+            "current_revision": null
+          },
+          "request_id": "req_future-type"
+        },
+        "headers": {}
+      },
+      "future_assertions": [
+        "A14"
+      ]
+    },
+    {
+      "id": "unsupported-format",
+      "operation": "requestExport",
+      "path": {
+        "project_id": "prj_demo",
+        "artifact_id": "art_note",
+        "version_id": "av_note-v2"
+      },
+      "query": {},
+      "headers": {
+        "Idempotency-Key": "format-001"
+      },
+      "request": {
+        "expected_revision": 3,
+        "format": "pptx",
+        "template_version": "aist-note.v1",
+        "renderer_version": "aist-docx.v1",
+        "settings": {
+          "locale": "ru-RU",
+          "paper": "A4",
+          "release_mode": "accepted",
+          "theme": "standard"
+        }
+      },
+      "response": {
+        "status": 422,
+        "body": {
+          "error": {
+            "code": "unsupported_format",
+            "message": "Операция не выполнена: unsupported_format.",
+            "retryable": false,
+            "run_id": null,
+            "call_id": null,
+            "tool_call_id": null,
+            "expected_revision": null,
+            "current_revision": null
+          },
+          "request_id": "req_unsupported-format"
+        },
+        "headers": {}
+      },
+      "future_assertions": [
+        "A14"
+      ]
+    },
+    {
+      "id": "missing-export",
+      "operation": "downloadExport",
+      "path": {
+        "project_id": "prj_demo",
+        "export_id": "exp_docx"
+      },
+      "query": {},
+      "headers": {},
+      "request": null,
+      "response": {
+        "status": 410,
+        "body": {
+          "error": {
+            "code": "export_missing",
+            "message": "Операция не выполнена: export_missing.",
+            "retryable": false,
+            "run_id": null,
+            "call_id": null,
+            "tool_call_id": null,
+            "expected_revision": null,
+            "current_revision": null
+          },
+          "request_id": "req_missing-export"
+        },
+        "headers": {}
+      },
+      "future_assertions": [
+        "A13"
+      ]
+    },
+    {
+      "id": "corrupt-export",
+      "operation": "downloadExport",
+      "path": {
+        "project_id": "prj_demo",
+        "export_id": "exp_docx"
+      },
+      "query": {},
+      "headers": {},
+      "request": null,
+      "response": {
+        "status": 409,
+        "body": {
+          "error": {
+            "code": "export_corrupt",
+            "message": "Операция не выполнена: export_corrupt.",
+            "retryable": false,
+            "run_id": null,
+            "call_id": null,
+            "tool_call_id": null,
+            "expected_revision": null,
+            "current_revision": null
+          },
+          "request_id": "req_corrupt-export"
+        },
+        "headers": {}
+      },
+      "future_assertions": [
+        "A13"
+      ]
+    },
+    {
+      "id": "controlled-tool-error",
+      "operation": "getRun",
+      "path": {
+        "project_id": "prj_demo",
+        "run_id": "run_error"
+      },
+      "query": {},
+      "headers": {},
+      "request": null,
+      "response": {
+        "status": 200,
+        "body": {
+          "$ref": "entities.json#/records/error_failed/value"
+        },
+        "headers": {}
+      },
+      "future_assertions": [
+        "A05"
+      ]
+    },
+    {
+      "id": "cancel",
+      "operation": "cancelRun",
+      "path": {
+        "project_id": "prj_demo",
+        "run_id": "run_cancel"
+      },
+      "query": {},
+      "headers": {
+        "Idempotency-Key": "cancel-001"
+      },
+      "request": {
+        "expected_revision": 1
+      },
+      "response": {
+        "status": 200,
+        "body": {
+          "$ref": "entities.json#/records/cancelled/value"
+        },
+        "headers": {}
+      },
+      "future_assertions": [
+        "A04"
+      ]
+    },
+    {
+      "id": "cancel-after-late",
+      "operation": "getRun",
+      "path": {
+        "project_id": "prj_demo",
+        "run_id": "run_cancel"
+      },
+      "query": {},
+      "headers": {},
+      "request": null,
+      "response": {
+        "status": 200,
+        "body": {
+          "$ref": "entities.json#/records/cancelled/value"
+        },
+        "headers": {}
+      },
+      "future_assertions": [
+        "A04",
+        "A07"
+      ]
+    },
+    {
+      "id": "unknown-outcome",
+      "operation": "getRun",
+      "path": {
+        "project_id": "prj_demo",
+        "run_id": "run_unknown"
+      },
+      "query": {},
+      "headers": {},
+      "request": null,
+      "response": {
+        "status": 200,
+        "body": {
+          "$ref": "entities.json#/records/recovery_required/value"
+        },
+        "headers": {}
+      },
+      "future_assertions": [
+        "A08",
+        "A15"
+      ]
+    },
+    {
+      "id": "waiting-input",
+      "operation": "getRun",
+      "path": {
+        "project_id": "prj_demo",
+        "run_id": "run_wait"
+      },
+      "query": {},
+      "headers": {},
+      "request": null,
+      "response": {
+        "status": 200,
+        "body": {
+          "$ref": "entities.json#/records/waiting_run/value"
+        },
+        "headers": {}
+      },
+      "future_assertions": [
+        "A17"
+      ]
+    },
+    {
+      "id": "resume-input",
+      "operation": "resumeRun",
+      "path": {
+        "project_id": "prj_demo",
+        "run_id": "run_wait"
+      },
+      "query": {},
+      "headers": {
+        "Idempotency-Key": "resume-001"
+      },
+      "request": {
+        "expected_revision": 2,
+        "waiting_input_id": "wait_audience",
+        "text": "Для кредитного комитета."
+      },
+      "response": {
+        "status": 202,
+        "body": {
+          "$ref": "entities.json#/records/resume_submission/value"
+        },
+        "headers": {}
+      },
+      "future_assertions": [
+        "A17"
+      ]
+    },
+    {
+      "id": "budget-stop",
+      "operation": "getRun",
+      "path": {
+        "project_id": "prj_demo",
+        "run_id": "run_budget"
+      },
+      "query": {},
+      "headers": {},
+      "request": null,
+      "response": {
+        "status": 200,
+        "body": {
+          "$ref": "entities.json#/records/budget_exceeded/value"
+        },
+        "headers": {}
+      },
+      "future_assertions": [
+        "A07"
+      ]
+    },
+    {
+      "id": "unsupported-format-before-run",
+      "operation": "submitMessage",
+      "path": {
+        "project_id": "prj_demo",
+        "conversation_id": "conv_demo"
+      },
+      "query": {},
+      "headers": {
+        "Idempotency-Key": "precheck-format-001"
+      },
+      "request": {
+        "expected_revision": 2,
+        "text": "Подготовь записку о квартальной выручке.",
+        "source_version_ids": [
+          "sv_spectromer-v1"
+        ],
+        "skill_version_id": "skill_analytical-note-v1",
+        "model_profile_version_id": "model_novita-mimo-v1",
+        "requested_result_type": "analytical_note",
+        "parameters": {
+          "audience": null,
+          "sections": []
+        },
+        "base_version_id": null,
+        "expected_artifact_revision": 0,
+        "requested_export": {
+          "format": "pptx",
+          "template_version": "aist-note.v1",
+          "renderer_version": "aist-pptx.v1",
+          "settings": {
+            "locale": "ru-RU",
+            "paper": "A4",
+            "release_mode": "accepted",
+            "theme": "standard"
+          }
+        }
+      },
+      "response": {
+        "status": 422,
+        "body": {
+          "error": {
+            "code": "unsupported_format",
+            "message": "Операция не выполнена: unsupported_format.",
+            "retryable": false,
+            "run_id": null,
+            "call_id": null,
+            "tool_call_id": null,
+            "expected_revision": null,
+            "current_revision": null
+          },
+          "request_id": "req_unsupported-format-before-run"
+        },
+        "headers": {}
+      },
+      "future_assertions": [
+        "A14"
+      ]
+    },
+    {
+      "id": "D05-F01-historical",
+      "operation": "getVersionById",
+      "path": {
+        "project_id": "prj_demo",
+        "version_id": "av_note-v1"
+      },
+      "query": {},
+      "headers": {},
+      "request": null,
+      "response": {
+        "status": 200,
+        "body": {
+          "$ref": "entities.json#/records/note_v1_view/value"
+        },
+        "headers": {}
+      },
+      "future_assertions": [
+        "A01",
+        "A18"
+      ]
+    },
+    {
+      "id": "D05-F01-message",
+      "operation": "getVersionById",
+      "path": {
+        "project_id": "prj_demo",
+        "version_id": "av_answer-v1"
+      },
+      "query": {},
+      "headers": {},
+      "request": null,
+      "response": {
+        "status": 200,
+        "body": {
+          "$ref": "entities.json#/records/answer_view/value"
+        },
+        "headers": {}
+      },
+      "future_assertions": [
+        "A01",
+        "A18"
+      ]
+    },
+    {
+      "id": "D05-F01-result-saved",
+      "operation": "getVersionById",
+      "path": {
+        "project_id": "prj_demo",
+        "version_id": "av_answer-v1"
+      },
+      "query": {},
+      "headers": {},
+      "request": null,
+      "response": {
+        "status": 200,
+        "body": {
+          "$ref": "entities.json#/records/answer_view/value"
+        },
+        "headers": {}
+      },
+      "future_assertions": [
+        "A01",
+        "A18"
+      ]
+    }
+  ]
+}

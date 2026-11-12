@@ -1,0 +1,20 @@
+# Подключается только поверх infra/compose.local.yaml.
+services:
+  web:
+    networks: [application, browser]
+  worker:
+    command: [python, /workspace/scripts/qa/local_provider.py]
+    volumes:
+      - type: bind
+        source: ../scripts/qa/local_provider.py
+        target: /workspace/scripts/qa/local_provider.py
+        read_only: true
+        bind: {create_host_path: false}
+networks:
+  application:
+    internal: true
+  outbound:
+    internal: true
+  browser:
+    ipam:
+      config: [{subnet: "${AIST_NETWORK_PREFIX:-10.253.242}.64/28"}]

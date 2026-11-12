@@ -1,0 +1,117 @@
+{
+  "contract_version": "D04.v1",
+  "transport": "private OpenClaw tool plugin to AIST; no public tool endpoint",
+  "trusted_binding": "AIST run capability binds run, project, actor, source pins and executor call ID; absent from model arguments",
+  "tools": {
+    "aist_read_source": {
+      "arguments": {
+        "$ref": "schemas/aist.schema.json#/$defs/ReadSourceArgs"
+      },
+      "reply": {
+        "$ref": "schemas/aist.schema.json#/$defs/ReadSourceReply"
+      },
+      "writes": false,
+      "requires_llm": false
+    },
+    "aist_search_evidence": {
+      "arguments": {
+        "$ref": "schemas/aist.schema.json#/$defs/SearchEvidenceArgs"
+      },
+      "reply": {
+        "$ref": "schemas/aist.schema.json#/$defs/SearchEvidenceReply"
+      },
+      "writes": false,
+      "requires_llm": true
+    },
+    "aist_get_facts": {
+      "arguments": {
+        "$ref": "schemas/aist.schema.json#/$defs/GetFactsArgs"
+      },
+      "reply": {
+        "$ref": "schemas/aist.schema.json#/$defs/GetFactsReply"
+      },
+      "writes": true,
+      "requires_llm": true
+    },
+    "aist_calculate": {
+      "arguments": {
+        "$ref": "schemas/aist.schema.json#/$defs/CalculateArgs"
+      },
+      "reply": {
+        "$ref": "schemas/aist.schema.json#/$defs/CalculateReply"
+      },
+      "writes": false,
+      "requires_llm": false
+    },
+    "aist_save_artifact": {
+      "arguments": {
+        "$ref": "schemas/aist.schema.json#/$defs/SaveArtifactArgs"
+      },
+      "reply": {
+        "$ref": "schemas/aist.schema.json#/$defs/SaveArtifactReply"
+      },
+      "writes": true,
+      "requires_llm": false
+    },
+    "aist_request_input": {
+      "arguments": {
+        "$ref": "schemas/aist.schema.json#/$defs/RequestInputArgs"
+      },
+      "reply": {
+        "$ref": "schemas/aist.schema.json#/$defs/RequestInputReply"
+      },
+      "writes": true,
+      "requires_llm": false
+    },
+    "aist_web_search": {
+      "arguments": {
+        "$ref": "schemas/aist.schema.json#/$defs/WebSearchArgs"
+      },
+      "reply": {
+        "$ref": "schemas/aist.schema.json#/$defs/WebSearchReply"
+      },
+      "writes": true,
+      "requires_llm": false
+    },
+    "aist_web_fetch": {
+      "arguments": {
+        "$ref": "schemas/aist.schema.json#/$defs/WebFetchArgs"
+      },
+      "reply": {
+        "$ref": "schemas/aist.schema.json#/$defs/WebFetchReply"
+      },
+      "writes": true,
+      "requires_llm": false
+    },
+    "aist_read_task": {
+      "arguments": {
+        "$ref": "schemas/aist.schema.json#/$defs/ReadTaskArgs"
+      },
+      "reply": {
+        "$ref": "schemas/aist.schema.json#/$defs/ReadTaskReply"
+      },
+      "writes": true,
+      "requires_llm": false
+    },
+    "aist_read_web": {
+      "arguments": {
+        "$ref": "schemas/aist.schema.json#/$defs/ReadWebArgs"
+      },
+      "reply": {
+        "$ref": "schemas/aist.schema.json#/$defs/ReadWebReply"
+      },
+      "writes": false,
+      "requires_llm": false
+    },
+    "aist_research": {
+      "arguments": {
+        "$ref": "schemas/aist.schema.json#/$defs/ResearchArgs"
+      },
+      "reply": {
+        "$ref": "schemas/aist.schema.json#/$defs/ResearchReply"
+      },
+      "writes": true,
+      "requires_llm": true
+    }
+  }
+}

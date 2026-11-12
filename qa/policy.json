@@ -1,0 +1,4 @@
+{
+  "run": {"policy_version":"qa-d07-policy.v1","currency":"USD","limit":"1.25000001","max_model_calls":8,"max_tool_calls":16,"max_duration_seconds":600,"max_repair_calls":0},
+  "project_limit":"2.75000001","quote_usd":"0.30000001","input_per_million":"1.23456789","output_per_million":"2.34567891","pricing_version":"qa-d07-pricing.v1"
+}

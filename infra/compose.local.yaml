@@ -1,0 +1,147 @@
+name: ${AIST_STACK_NAME:-aist-local}
+x-application: &application
+  image: aist-runtime:local
+  pull_policy: never
+  platform: linux/amd64
+  user: "10001:10001"
+  init: true
+  cap_drop: [ALL]
+  security_opt: [no-new-privileges:true]
+  environment:
+    AIST_DB_HOST: db
+    AIST_DB_NAME: aist
+    AIST_DB_USER: aist
+    AIST_DB_PASSWORD: ${AIST_DB_PASSWORD:?Set AIST_DB_PASSWORD in .env.local}
+    AIST_CHAT_UI_OWNERS: ${AIST_CHAT_UI_OWNERS:-}
+    AIST_STORAGE_ROOT: /data/sources
+    AIST_EXPORT_ROOT: /data/exports
+    AIST_OPENCLAW_ROOT: /data/execution
+    AIST_OPENAI_SECRET_PATH: /run/secrets/openai.key
+    AIST_POLICY_PATH: /run/config/policy.json
+    AIST_EXECUTOR_MODE: openclaw
+    AIST_LIVE_MODELS_ENABLED: "true"
+    AIST_MODEL_PROFILE_ID: model_openai-astra-xhigh-v1
+    AIST_EMBEDDINGS_ENABLED: "false"
+    AIST_READY_FACTS_ONLY: "false"
+    AIST_TRANSPORT_SECONDS: "600"
+    AIST_LEASE_SECONDS: "30"
+    AIST_NEWS_ORIGIN: http://news:8000
+  volumes:
+    - sources:/data/sources
+    - exports:/data/exports
+    - execution:/data/execution
+    - type: bind
+      source: ../.local/policy.json
+      target: /run/config/policy.json
+      read_only: true
+      bind: {create_host_path: false}
+  networks: [application, database, research]
+  depends_on:
+    db: {condition: service_healthy}
+services:
+  db:
+    image: postgres:16.15-bookworm@sha256:0ea6700a3b4f0ae6ce746519073558aed4d88a79d8d07622a9a644946c7319c4
+    platform: linux/amd64
+    environment:
+      POSTGRES_USER: aist
+      POSTGRES_DB: aist
+      POSTGRES_PASSWORD: ${AIST_DB_PASSWORD:?Set AIST_DB_PASSWORD in .env.local}
+    volumes: [database:/var/lib/postgresql/data]
+    networks: [database]
+    mem_limit: 384m
+    healthcheck:
+      test: [CMD, pg_isready, -U, aist, -d, aist]
+      interval: 3s
+      timeout: 3s
+      retries: 30
+  backend:
+    <<: *application
+    mem_limit: 512m
+    healthcheck:
+      test: [CMD, python, -c, "import urllib.request; urllib.request.urlopen('http://127.0.0.1:8000/readyz', timeout=5)"]
+      interval: 5s
+      timeout: 6s
+      retries: 12
+  worker:
+    <<: *application
+    restart: unless-stopped
+    volumes:
+      - sources:/data/sources
+      - exports:/data/exports
+      - execution:/data/execution
+      - type: bind
+        source: ../.local/policy.json
+        target: /run/config/policy.json
+        read_only: true
+        bind: {create_host_path: false}
+      - type: bind
+        source: ../.local/openai.key
+        target: /run/secrets/openai.key
+        read_only: true
+        bind: {create_host_path: false}
+    healthcheck:
+      test: [CMD, python, -m, app.worker, --ready]
+      interval: 5s
+      timeout: 8s
+      retries: 6
+    mem_limit: 2048m
+    memswap_limit: 4096m
+    command: [python, -m, app.worker]
+    stop_grace_period: 20s
+    depends_on:
+      db: {condition: service_healthy}
+      backend: {condition: service_healthy}
+      news: {condition: service_started}
+  news:
+    image: aist-runtime:local
+    pull_policy: never
+    platform: linux/amd64
+    user: "10001:10001"
+    init: true
+    cap_drop: [ALL]
+    security_opt: [no-new-privileges:true]
+    read_only: true
+    tmpfs: ["/tmp:size=32m,mode=1777"]
+    command: [python, -m, uvicorn, app.news_sources:app, --host, "0.0.0.0", --port, "8000", --no-access-log]
+    mem_limit: 256m
+    networks: [research, outbound]
+  web:
+    image: aist-web:local
+    pull_policy: never
+    platform: linux/amd64
+    user: node
+    init: true
+    cap_drop: [ALL]
+    security_opt: [no-new-privileges:true]
+    environment:
+      AIST_API_ORIGIN: http://backend:8000
+    ports: ["127.0.0.1:${AIST_WEB_PORT:-30811}:8080"]
+    networks: [application]
+    mem_limit: 128m
+    depends_on:
+      backend: {condition: service_healthy}
+    healthcheck:
+      test: [CMD, node, -e, "fetch('http://127.0.0.1:8080/').then(r => process.exit(r.ok ? 0 : 1)).catch(() => process.exit(1))"]
+      interval: 5s
+      timeout: 3s
+      retries: 12
+volumes:
+  database:
+  sources:
+  exports:
+  execution:
+networks:
+  application:
+    ipam:
+      config: [{subnet: "${AIST_NETWORK_PREFIX:-10.253.242}.0/28"}]
+  database:
+    internal: true
+    ipam:
+      config: [{subnet: "${AIST_NETWORK_PREFIX:-10.253.242}.16/28"}]
+  research:
+    internal: true
+    ipam:
+      config: [{subnet: "${AIST_NETWORK_PREFIX:-10.253.242}.32/28"}]
+  outbound:
+    ipam:
+      config: [{subnet: "${AIST_NETWORK_PREFIX:-10.253.242}.48/28"}]

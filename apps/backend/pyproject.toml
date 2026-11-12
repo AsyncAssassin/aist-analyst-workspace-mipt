@@ -1,0 +1,10 @@
+[project]
+name = "aist-backend"
+version = "0.1.0"
+requires-python = "==3.11.*"
+# Установка только из requirements.lock; requirements.in задает выбранные зависимости.
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+pythonpath = ["."]
+addopts = "-q"

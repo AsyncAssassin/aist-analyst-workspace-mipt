@@ -1,0 +1,33 @@
+{
+  "run": {
+    "policy_version": "openai-astra.live.cache30m.v2",
+    "currency": "USD",
+    "limit": "80",
+    "max_model_calls": 16,
+    "max_tool_calls": 40,
+    "max_duration_seconds": 1800,
+    "max_repair_calls": 0
+  },
+  "project_limit": "200",
+  "quote_usd": "24",
+  "input_per_million": "10",
+  "output_per_million": "50",
+  "pricing_version": "openai-astra.standard.cache.v2",
+  "budget_scope": "openai-authorized-total",
+  "historical_exposure_usd": "0",
+  "total_authorized_usd": "80",
+  "demo_access": {
+    "enabled": false,
+    "owner_ids": []
+  },
+  "model_profile_version_id": "model_openai-astra-xhigh-v1",
+  "long_context_threshold_tokens": 272000,
+  "long_context_input_per_million": "20",
+  "long_context_output_per_million": "75",
+  "cache_read_per_million": "1",
+  "cache_write_30m_per_million": "12.5",
+  "cache_write_12h_per_million": "25",
+  "long_context_cache_read_per_million": "2",
+  "long_context_cache_write_30m_per_million": "25",
+  "long_context_cache_write_12h_per_million": "50"
+}

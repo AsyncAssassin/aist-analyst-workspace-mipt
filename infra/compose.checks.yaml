@@ -1,0 +1,47 @@
+name: aist-checks
+services:
+  db:
+    image: postgres:16.15-bookworm@sha256:0ea6700a3b4f0ae6ce746519073558aed4d88a79d8d07622a9a644946c7319c4
+    platform: linux/amd64
+    environment:
+      POSTGRES_USER: aist_test
+      POSTGRES_PASSWORD: synthetic-local-only
+      POSTGRES_DB: aist_d15_r1_test
+    tmpfs:
+      - /var/lib/postgresql/data
+    networks: [isolated]
+    healthcheck:
+      test: [CMD, pg_isready, -U, aist_test, -d, aist_d15_r1_test]
+      interval: 2s
+      timeout: 2s
+      retries: 30
+  checks:
+    image: aist-native-checks:local
+    pull_policy: never
+    platform: linux/amd64
+    environment:
+      AIST_TEST_POSTGRES: "true"
+      AIST_DB_HOST: db
+      AIST_DB_PORT: "5432"
+      AIST_DB_NAME: aist_d15_r1_test
+      AIST_DB_USER: aist_test
+      AIST_DB_PASSWORD: synthetic-local-only
+      AIST_LIVE_MODELS_ENABLED: "false"
+      AIST_EMBEDDINGS_ENABLED: "false"
+    networks: [isolated]
+    depends_on:
+      db: {condition: service_healthy}
+    command:
+      - python
+      - -m
+      - pytest
+      - -p
+      - no:cacheprovider
+      - tests/test_openai_responses_postgres.py::test_installed_gateway_preserves_responses_history_and_saves
+      - tests/test_openai_responses_postgres.py::test_installed_note_extracts_images_researches_saves_and_rewrites
+networks:
+  isolated:
+    internal: true
+    ipam:
+      config:
+        - subnet: ${AIST_TEST_SUBNET:-10.253.241.0/28}

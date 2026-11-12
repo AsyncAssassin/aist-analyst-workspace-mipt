@@ -1,0 +1,25 @@
+{
+  "_synthetic": "Hand-authored API fixture.",
+  "securities": {
+    "columns": [
+      "secid",
+      "isin",
+      "emitent_id",
+      "emitent_inn",
+      "type",
+      "regnumber",
+      "emitent_title"
+    ],
+    "data": [
+      [
+        "WUSH",
+        "RU000A105EX7",
+        13955,
+        "9703103060",
+        "common_share",
+        "TEST-REG-01",
+        "Synthetic issuer for WUSH"
+      ]
+    ]
+  }
+}

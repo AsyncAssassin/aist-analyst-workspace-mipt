@@ -1,0 +1,13 @@
+{
+  "name": "aist-openclaw-runtime",
+  "version": "1.0.0",
+  "private": true,
+  "engines": {
+    "node": "24.21.0",
+    "npm": "11.19.0"
+  },
+  "packageManager": "npm@11.19.0",
+  "dependencies": {
+    "openclaw": "2026.9.8"
+  }
+}

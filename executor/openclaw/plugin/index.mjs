@@ -1,0 +1,37 @@
+import fs from 'node:fs';
+import net from 'node:net';
+const schemas=JSON.parse(fs.readFileSync(new URL('./schemas.json',import.meta.url),'utf8'));
+function invoke(value, signal) {
+  return new Promise((resolve,reject) => {
+    const socket=net.createConnection({path:process.env.AIST_TOOLS_SOCKET});let raw='';
+    socket.setEncoding('utf8');
+    const abort=() => socket.destroy(Error('aborted'));
+    signal?.addEventListener('abort',abort,{once:true});
+    const extracting=value.name==='aist_get_facts' &&
+      (value.args.extract!=null || Object.hasOwn(value.args,'question'));
+    const deadline=value.name==='aist_research'?Number(process.env.AIST_RESEARCH_TIMEOUT_MS ?? 1815000):extracting?Number(process.env.AIST_EXTRACTION_TIMEOUT_MS ?? 615000):value.name.startsWith('aist_web_')?60000:value.name==='aist_search_evidence'?45000:15000;
+    socket.setTimeout(deadline,() => socket.destroy(Error('tool deadline')));
+    socket.on('connect',() => socket.write(JSON.stringify(value)+'\n'));
+    socket.on('data',chunk => {raw+=chunk;if(raw.length>2000000)socket.destroy(Error('reply too large'));if(raw.includes('\n')) {try {resolve(JSON.parse(raw));}catch(e){reject(e);}socket.end();}});
+    socket.on('error',reject);socket.on('close',() => signal?.removeEventListener('abort',abort));
+  });
+}
+const descriptions={
+  aist_research:'Research the public web in a separate OpenClaw context within this Run. First read the note task and documents, then provide a public company name and a concrete research objective: missing topics, periods and segments. Never include private deal terms or pasted private documents. All model calls share this Run budget. Returns a summary, saved source IDs and bounded source texts in readings. Use these texts as evidence without reading the same parts again. Use aist_read_web only for missing texts or continuations at next_offset. You may refine the objective in another call.',
+  aist_read_web:'Read the retained provider text by evidence_id and character offset. No network request. Use next_offset to continue; available after aist_read_task as well.',
+  aist_read_task:'Finish public research and receive the private note task, pinned documents and ready facts. This permanently closes web search and fetching for this Run. Call after reading public sources, then compose the note with ordinary AIST tools. No arguments.',
+  aist_web_search:'Search the public web through the configured search provider. Choose queries for this company, its market, competitors, owners or news. Send only public names and research questions, never PDF text, private deal terms or conversation history. Results are discovery snippets, not evidence. Group related queries; use aist_web_fetch to read selected URLs. Every model continuation and tool call uses the shared Run budget.',
+  aist_web_fetch:'Read a public HTTPS source through the configured extraction provider. The URL must appear in the results of the specified search_id from this Run. To open a link found in retrieved text, first obtain a search result containing that URL. Returns server-issued evidence with source URL, provider response SHA and attributed dates. The server does not claim to hold the original page bytes. Cite its evidence_id only in an external_context paragraph. Truncated text does not represent the whole source. If unavailable, select another source; do not treat search snippets as proof.',
+  aist_get_facts:'Get ordinary source-bound facts, optional unchecked visual_observations and skipped.review_candidate snapshots with status not_admitted. A local refusal does not mean the PDF lacks that information. A material preliminary note paragraph may cite candidate_id via review_candidate_ids and origin=source_candidate; provenance does not confirm accuracy. Use visual observation IDs only in an analytical-note draft, never as fact_refs or calculation inputs. Repeat the same question to read its saved result without another model POST.',
+  aist_save_artifact:'Save an immutable analytical_note version with paragraph/table references. Only a preliminary paragraph may use origin=source_candidate with nonempty review_candidate_ids from current tool results or the selected parent. Pass IDs only; the server attaches rejected snapshots and blocks acceptance. Candidates are never fact_refs, table rows or calculation inputs. A structurally valid note is saved as an unaccepted draft even when server remarks remain on financial rows or their numeric evidence. Stored severity=error findings block acceptance of that exact version; this is not a semantic check of free prose. The save completes the AIST task with no second attempt. For analytical_note only, optional questions is up to 5 strings of at most 1000 characters: concrete nonblocking questions about this material, saved with the result in the chat. They are not part of the note or a request_input. For analytical_note, optional news_events selects up to 5 distinct events from saved external_evidence_id values: description, published date or null, event_date or null, and date_quote copied exactly from the retained text (required when either date is given). Describe what happened, not the document title. Do not replace an unknown date with retrieval time. The server preserves conflicting provider metadata. An omitted news_events keeps the parent selection, [] explicitly removes it, and a new list replaces it only in the new version. Save completes the Run, so do not postpone questions until a later reply. For a new full analytical-note-v3, ownership_review is required: status included with supported shareholder paragraphs, or not_established with a specific reason. Every saved owners-topic source must be cited in that section or listed in excluded_sources as external_evidence_id and reason. Unknown investment perimeter or share percentages do not justify omitting known legal-entity owners. A search topic does not prove ownership. An unfinished material collection is refused even if some facts are usable. Do not save a partial note as successful or replace a missing core theme with boilerplate. A broken fact or calculation reference, a foreign source, a forged origin or an invalid structure is refused: fix the named place and save again.',
+  aist_calculate:'AIST growth_percent.v1 по двум сохраненным фактам текущего Run (previous, current): один показатель, компания, источник и строка reporting_basis, nature=reported_actual, денежные суммы с одинаковыми unit, currency и scale, period.kind=interval с одинаковым календарным интервалом (квартал, полугодие, девять месяцев или год) в соседних годах. Остатки на дату (instant), год против квартала, прогнозы и разные reporting_basis отклоняются: тогда приведи исходные значения и не повторяй отклоненную команду.'};
+export default {id:'aist-tools',name:'AIST source-bound tools',register(api) {
+  for (const [name,parameters] of Object.entries(schemas)) api.registerTool({contextVersion:2,create(context) {
+    if(!context.sessionKey)return null;
+    return {name,label:name,description:descriptions[name] ?? `AIST ${name}: only the current Run source pins and saved facts.`,parameters,executionMode:'sequential',
+      async execute(toolCallId,args,signal) {signal?.throwIfAborted();context.assertInvocationCurrent();
+        const result=await invoke({session:context.sessionKey,tool_call_id:toolCallId,name,args},signal);
+        return {content:[{type:'text',text:JSON.stringify(result)}],details:result,isError:result.ok===false};}
+    };
+  }},{name,optional:true});
+}};

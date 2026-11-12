@@ -1,0 +1,1 @@
+{"id":"aist-novita-transport","name":"AIST Novita transport policy","version":"1.0.0","providers":["novita-aist","anthropic-aist","openai-aist"],"configSchema":{"type":"object","additionalProperties":false,"properties":{}}}

@@ -1,0 +1,26 @@
+FROM --platform=linux/amd64 python:3.11.16-slim-trixie@sha256:e41613d42d4891e4930f79523f93f81bbc7632584ec65e36ab055f41a800b41e AS runtime
+ENV PYTHONDONTWRITEBYTECODE=1 PYTHONUNBUFFERED=1 PIP_DISABLE_PIP_VERSION_CHECK=1 PYTHONPATH=/workspace/apps/backend HOME=/tmp XDG_CACHE_HOME=/tmp/aist-cache
+WORKDIR /workspace
+COPY infra/debian.sources /etc/apt/sources.list.d/debian.sources
+RUN apt-get update -qq && apt-get install -y --no-install-recommends libreoffice-writer=4:25.2.3-2+deb13u8 fonts-dejavu-core=2.37-8 fonts-liberation=1:2.1.5-3 poppler-utils=25.03.0-5+deb13u4 && rm -rf /var/lib/apt/lists/*
+COPY apps/backend/requirements.lock /tmp/requirements.lock
+RUN python -m pip install --no-cache-dir pip==26.2.1 && python -m pip install --no-cache-dir --only-binary=:all: --require-hashes -r /tmp/requirements.lock && python -m pip check
+COPY apps/backend/assets/aso/*.ttf /usr/local/share/fonts/aist/
+RUN fc-cache -f
+COPY contracts contracts
+COPY apps/backend apps/backend
+COPY executor executor
+COPY infra/alembic.ini infra/alembic.ini
+COPY infra/migrations infra/migrations
+WORKDIR /workspace/apps/backend
+RUN mkdir -p /data/sources /data/exports /data/execution && chown 10001:10001 /data/sources /data/exports /data/execution
+USER 10001:10001
+CMD ["python", "-m", "uvicorn", "app.main:app", "--host", "0.0.0.0", "--port", "8000", "--no-access-log", "--timeout-graceful-shutdown", "5"]
+
+FROM runtime AS checks
+COPY scripts/qa /workspace/scripts/qa
+USER root
+COPY apps/backend/requirements-dev.lock /tmp/requirements-dev.lock
+RUN python -m pip install --no-cache-dir --only-binary=:all: --require-hashes -r /tmp/requirements-dev.lock && python -m pip check
+USER 10001:10001
+CMD ["python", "-m", "pytest", "-p", "no:cacheprovider"]

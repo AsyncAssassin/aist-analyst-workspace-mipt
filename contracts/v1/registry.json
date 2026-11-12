@@ -1,0 +1,339 @@
+{
+  "contract_version": "D04.v1",
+  "skills": [
+    {
+      "id": "skill_analytical-note-v3",
+      "skill_name": "analytical-note-v3",
+      "version": "3.0.0",
+      "executor": "openclaw",
+      "executor_version": "2026.9.8",
+      "instruction_format": "SKILL.md",
+      "bundle_sha256": null,
+      "status": "planned",
+      "input_kinds": [
+        "source_version",
+        "artifact_version"
+      ],
+      "result_type": "analytical_note",
+      "result_schema": {
+        "$ref": "schemas/aist.schema.json#/$defs/NoteContent"
+      },
+      "validation_profile": "financial-note.v2",
+      "allowed_tools": [
+        "aist_read_source",
+        "aist_search_evidence",
+        "aist_get_facts",
+        "aist_calculate",
+        "aist_save_artifact",
+        "aist_request_input"
+      ],
+      "max_sources_execution": 3,
+      "templates": [
+        "aist-note.v1",
+        "aist-note.v2",
+        "aist-aso.v1"
+      ],
+      "result_schema_version": "1.0.0"
+    },
+    {
+      "id": "skill_source-answer-v2",
+      "skill_name": "source-answer-v2",
+      "version": "2.0.0",
+      "executor": "openclaw",
+      "executor_version": "2026.9.8",
+      "instruction_format": "SKILL.md",
+      "bundle_sha256": null,
+      "status": "planned",
+      "input_kinds": [
+        "source_version"
+      ],
+      "result_type": "evidence_answer",
+      "result_schema": {
+        "$ref": "schemas/aist.schema.json#/$defs/AnswerContent"
+      },
+      "validation_profile": "evidence-answer.v1",
+      "allowed_tools": [
+        "aist_read_source",
+        "aist_search_evidence",
+        "aist_get_facts",
+        "aist_calculate",
+        "aist_save_artifact",
+        "aist_request_input"
+      ],
+      "max_sources_execution": 1,
+      "templates": [],
+      "result_schema_version": "1.0.0"
+    },
+    {
+      "id": "skill_source-answer-v1",
+      "skill_name": "source-answer",
+      "version": "1.0.0",
+      "executor": "openclaw",
+      "executor_version": "2026.9.8",
+      "instruction_format": "SKILL.md",
+      "bundle_sha256": null,
+      "status": "planned",
+      "input_kinds": [
+        "source_version"
+      ],
+      "result_type": "evidence_answer",
+      "result_schema": {
+        "$ref": "schemas/aist.schema.json#/$defs/AnswerContent"
+      },
+      "validation_profile": "evidence-answer.v1",
+      "allowed_tools": [
+        "aist_read_source",
+        "aist_search_evidence",
+        "aist_get_facts",
+        "aist_calculate",
+        "aist_save_artifact",
+        "aist_request_input"
+      ],
+      "max_sources_execution": 1,
+      "templates": [],
+      "result_schema_version": "1.0.0"
+    },
+    {
+      "id": "skill_analytical-note-v2",
+      "skill_name": "analytical-note-v2",
+      "version": "2.0.0",
+      "executor": "openclaw",
+      "executor_version": "2026.9.8",
+      "instruction_format": "SKILL.md",
+      "bundle_sha256": null,
+      "status": "planned",
+      "input_kinds": [
+        "source_version",
+        "artifact_version"
+      ],
+      "result_type": "analytical_note",
+      "result_schema": {
+        "$ref": "schemas/aist.schema.json#/$defs/NoteContent"
+      },
+      "validation_profile": "financial-note.v1",
+      "allowed_tools": [
+        "aist_read_source",
+        "aist_search_evidence",
+        "aist_get_facts",
+        "aist_calculate",
+        "aist_save_artifact",
+        "aist_request_input"
+      ],
+      "max_sources_execution": 1,
+      "templates": [
+        "aist-note.v1",
+        "aist-note.v2"
+      ],
+      "result_schema_version": "1.0.0"
+    },
+    {
+      "id": "skill_analytical-note-v1",
+      "skill_name": "analytical-note",
+      "version": "1.0.0",
+      "executor": "openclaw",
+      "executor_version": "2026.9.8",
+      "instruction_format": "SKILL.md",
+      "bundle_sha256": null,
+      "status": "planned",
+      "input_kinds": [
+        "source_version",
+        "artifact_version"
+      ],
+      "result_type": "analytical_note",
+      "result_schema": {
+        "$ref": "schemas/aist.schema.json#/$defs/NoteContent"
+      },
+      "validation_profile": "financial-note.v1",
+      "allowed_tools": [
+        "aist_read_source",
+        "aist_search_evidence",
+        "aist_get_facts",
+        "aist_calculate",
+        "aist_save_artifact",
+        "aist_request_input"
+      ],
+      "max_sources_execution": 1,
+      "templates": [
+        "aist-note.v1",
+        "aist-note.v2"
+      ],
+      "result_schema_version": "1.0.0"
+    },
+    {
+      "id": "skill_meeting-summary-v1",
+      "skill_name": "meeting-summary",
+      "version": "1.0.0",
+      "executor": "openclaw",
+      "executor_version": "2026.9.8",
+      "instruction_format": "SKILL.md",
+      "bundle_sha256": null,
+      "status": "future",
+      "input_kinds": [
+        "source_version",
+        "artifact_version"
+      ],
+      "result_type": "meeting_summary",
+      "result_schema": {
+        "$ref": "schemas/aist.schema.json#/$defs/MeetingContent"
+      },
+      "validation_profile": "meeting-summary.v1",
+      "allowed_tools": [
+        "aist_read_source",
+        "aist_save_artifact"
+      ],
+      "max_sources_execution": 1,
+      "templates": [],
+      "result_schema_version": "1.0.0"
+    },
+    {
+      "id": "skill_source-answer-v3",
+      "skill_name": "source-answer-v3",
+      "version": "3.0.0",
+      "executor": "openclaw",
+      "executor_version": "2026.9.8",
+      "instruction_format": "SKILL.md",
+      "bundle_sha256": null,
+      "status": "planned",
+      "input_kinds": [
+        "source_version"
+      ],
+      "result_type": "evidence_answer",
+      "result_schema": {
+        "$ref": "schemas/aist.schema.json#/$defs/AnswerContent"
+      },
+      "validation_profile": "evidence-answer.v1",
+      "allowed_tools": [
+        "aist_read_source",
+        "aist_search_evidence",
+        "aist_get_facts",
+        "aist_calculate",
+        "aist_save_artifact",
+        "aist_request_input"
+      ],
+      "max_sources_execution": 3,
+      "templates": [],
+      "result_schema_version": "1.0.0"
+    }
+  ],
+  "renderers": [
+    {
+      "version": "aist-docx.v1",
+      "format": "docx",
+      "result_type": "analytical_note",
+      "schema_version": "1.0.0",
+      "templates": [
+        "aist-note.v1"
+      ],
+      "status": "planned",
+      "requires_llm": false,
+      "implementation_task": "D12"
+    },
+    {
+      "version": "aist-pdf.v1",
+      "format": "pdf",
+      "result_type": "analytical_note",
+      "schema_version": "1.0.0",
+      "templates": [
+        "aist-note.v1"
+      ],
+      "status": "planned",
+      "requires_llm": false,
+      "implementation_task": "D12"
+    },
+    {
+      "version": "aist-docx.template01r2.2-docx1.2.0-lo25.2.3u8-ls2.1.5",
+      "format": "docx",
+      "result_type": "analytical_note",
+      "schema_version": "1.0.0",
+      "templates": [
+        "aist-note.v2"
+      ],
+      "status": "enabled",
+      "requires_llm": false,
+      "implementation_task": "TEMPLATE-01"
+    },
+    {
+      "version": "aist-pdf.template01r2.2-docx1.2.0-lo25.2.3u8-ls2.1.5",
+      "format": "pdf",
+      "result_type": "analytical_note",
+      "schema_version": "1.0.0",
+      "templates": [
+        "aist-note.v2"
+      ],
+      "status": "enabled",
+      "requires_llm": false,
+      "implementation_task": "TEMPLATE-01"
+    },
+    {
+      "version": "aist-aso-docx.12-lo25.2.3",
+      "format": "docx",
+      "result_type": "analytical_note",
+      "schema_version": "1.0.0",
+      "templates": [
+        "aist-aso.v1"
+      ],
+      "status": "enabled",
+      "requires_llm": false,
+      "implementation_task": "UX-CHAT-02"
+    },
+    {
+      "version": "aist-aso-pdf.12-lo25.2.3",
+      "format": "pdf",
+      "result_type": "analytical_note",
+      "schema_version": "1.0.0",
+      "templates": [
+        "aist-aso.v1"
+      ],
+      "status": "enabled",
+      "requires_llm": false,
+      "implementation_task": "UX-CHAT-02"
+    }
+  ],
+  "model_profiles": [
+    {
+      "id": "model_novita-mimo-v1",
+      "provider": "novita",
+      "model": "xiaomimimo/mimo-v2.6-pro",
+      "transport": "https_chat_completions",
+      "provider_compute_cancel": "not_proven",
+      "configuration_sha256": null,
+      "status": "planned"
+    },
+    {
+      "id": "model_anthropic-fable-xhigh-v1",
+      "provider": "anthropic",
+      "model": "claude-fable-5-1",
+      "transport": "https_anthropic_messages",
+      "provider_compute_cancel": "not_proven",
+      "configuration_sha256": null,
+      "status": "planned"
+    },
+    {
+      "id": "model_anthropic-fable-xhigh-v2",
+      "provider": "anthropic",
+      "model": "claude-fable-5-1",
+      "transport": "https_anthropic_messages",
+      "provider_compute_cancel": "not_proven",
+      "configuration_sha256": null,
+      "status": "planned"
+    },
+    {
+      "id": "model_anthropic-fable-xhigh-v3",
+      "provider": "anthropic",
+      "model": "claude-fable-5-1",
+      "transport": "https_anthropic_messages",
+      "provider_compute_cancel": "not_proven",
+      "configuration_sha256": null,
+      "status": "planned"
+    },
+    {
+      "id": "model_openai-astra-xhigh-v1",
+      "provider": "openai",
+      "model": "gpt-6-astra",
+      "transport": "https_openai_responses",
+      "provider_compute_cancel": "not_proven",
+      "configuration_sha256": null,
+      "status": "planned"
+    }
+  ]
+}

@@ -1,0 +1,137 @@
+{
+ "metric": "Выручка",
+ "subject": "Synthetic Company",
+ "reporting_basis": "МСФО",
+ "nature": "reported_actual",
+ "period": {
+  "kind": "interval",
+  "label": "2022",
+  "start": "2022-01-01",
+  "end": "2022-12-31"
+ },
+ "amount": {
+  "value": "1403",
+  "unit": "money",
+  "currency": "RUB",
+  "scale": "1000"
+ },
+ "fact_id": "fact_5db021ed92d53d039b43c2f9096158a9",
+ "source": {
+  "source_id": "s_table",
+  "source_version_id": "sv_table",
+  "sha256": "bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb"
+ },
+ "extraction_version": "pdf-lines.v14",
+ "raw_text": "1 403",
+ "evidence": [
+  {
+   "evidence_id": "ev_746edd8fdd720f0bccb6107a1d3f8f4e",
+   "source": {
+    "source_id": "s_table",
+    "source_version_id": "sv_table",
+    "sha256": "bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb"
+   },
+   "locator": {
+    "pdf_page": 1,
+    "area": "Таблица",
+    "bbox_pt": null,
+    "coordinate_system": "pdf_points_top_left"
+   },
+   "quote": "Synthetic Company\nМСФО\nтыс. руб.\nСрок оплаты Возраст\nЗа 9\nмесяцев\nдней 12\n2022 2021\nВыручка 1 403 1 004"
+  },
+  {
+   "evidence_id": "ev_c888c2acfe120866a4a63882106eb047",
+   "source": {
+    "source_id": "s_table",
+    "source_version_id": "sv_table",
+    "sha256": "bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb"
+   },
+   "locator": {
+    "pdf_page": 1,
+    "area": "Исходный атрибут: Synthetic Company",
+    "bbox_pt": null,
+    "coordinate_system": "pdf_points_top_left"
+   },
+   "quote": "Synthetic Company"
+  },
+  {
+   "evidence_id": "ev_a367891ab372664f0c8b65da04a1920e",
+   "source": {
+    "source_id": "s_table",
+    "source_version_id": "sv_table",
+    "sha256": "bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb"
+   },
+   "locator": {
+    "pdf_page": 1,
+    "area": "Исходный атрибут: Выручка",
+    "bbox_pt": null,
+    "coordinate_system": "pdf_points_top_left"
+   },
+   "quote": "Synthetic Company\nМСФО\nтыс. руб.\nСрок оплаты Возраст\nЗа 9\nмесяцев\nдней 12\n2022 2021\nВыручка 1 403 1 004"
+  },
+  {
+   "evidence_id": "ev_01e43ce8bc1dbe818d93cd57a949c1ef",
+   "source": {
+    "source_id": "s_table",
+    "source_version_id": "sv_table",
+    "sha256": "bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb"
+   },
+   "locator": {
+    "pdf_page": 1,
+    "area": "Исходный атрибут: МСФО",
+    "bbox_pt": null,
+    "coordinate_system": "pdf_points_top_left"
+   },
+   "quote": "Synthetic Company\nМСФО"
+  },
+  {
+   "evidence_id": "ev_b9d56034866cf9b9349f1a056cd3a7c2",
+   "source": {
+    "source_id": "s_table",
+    "source_version_id": "sv_table",
+    "sha256": "bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb"
+   },
+   "locator": {
+    "pdf_page": 1,
+    "area": "Исходный атрибут: тыс. руб.",
+    "bbox_pt": null,
+    "coordinate_system": "pdf_points_top_left"
+   },
+   "quote": "Synthetic Company\nМСФО\nтыс. руб."
+  },
+  {
+   "evidence_id": "ev_ddd9c6cd8cabbcf1834f4e9ca193cf76",
+   "source": {
+    "source_id": "s_table",
+    "source_version_id": "sv_table",
+    "sha256": "bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb"
+   },
+   "locator": {
+    "pdf_page": 1,
+    "area": "Строка таблицы и выбранный годовой столбец",
+    "bbox_pt": null,
+    "coordinate_system": "pdf_points_top_left"
+   },
+   "quote": "Выручка 1 403 1 004"
+  },
+  {
+   "evidence_id": "ev_a497c234622d8cf1c1dbddec443c21f9",
+   "source": {
+    "source_id": "s_table",
+    "source_version_id": "sv_table",
+    "sha256": "bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb"
+   },
+   "locator": {
+    "pdf_page": 1,
+    "area": "Общий период и годы столбцов",
+    "bbox_pt": null,
+    "coordinate_system": "pdf_points_top_left"
+   },
+   "quote": "2022 2021"
+  }
+ ],
+ "limitations": [
+  "Исторический PDF. Автоматически проверены ссылки, исходное написание числа и подпись периода. Полная смысловая и визуальная проверка не проведена.",
+  "Один опубликованный ряд позволяет считать изменение отчетного показателя, но не доказывает постоянство состава группы или органический рост. Изменения периметра раскрываются отдельно."
+ ]
+}

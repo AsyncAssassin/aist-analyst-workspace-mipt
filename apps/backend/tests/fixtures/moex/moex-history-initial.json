@@ -1,0 +1,23 @@
+{
+  "_synthetic": "Hand-authored prices, not exchange quotations.",
+  "history": {
+    "columns": [
+      "SECID",
+      "BOARDID",
+      "TRADEDATE",
+      "CURRENCYID",
+      "LEGALCLOSEPRICE",
+      "CLOSE"
+    ],
+    "data": [
+      [
+        "WUSH",
+        "TQBR",
+        "2026-10-14",
+        "SUR",
+        17.25,
+        17.11
+      ]
+    ]
+  }
+}

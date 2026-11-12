@@ -1,0 +1,282 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "type": "object",
+  "properties": {
+    "$schema": {
+      "const": "schemas/http.schema.json"
+    },
+    "contract_version": {
+      "const": "D04.v1"
+    },
+    "status": {
+      "const": "partially_implemented"
+    },
+    "authentication": {
+      "type": "string"
+    },
+    "common_errors": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      },
+      "uniqueItems": true
+    },
+    "error_schema": {
+      "type": "object",
+      "properties": {
+        "$ref": {
+          "type": "string",
+          "pattern": "^schemas/aist\\.schema\\.json#/\\$defs/[A-Za-z]+$"
+        }
+      },
+      "required": [
+        "$ref"
+      ],
+      "additionalProperties": false
+    },
+    "error_statuses": {
+      "type": "object",
+      "additionalProperties": {
+        "type": "integer",
+        "minimum": 400,
+        "maximum": 599
+      }
+    },
+    "operations": {
+      "type": "object",
+      "minProperties": 1,
+      "additionalProperties": {
+        "type": "object",
+        "properties": {
+          "method": {
+            "enum": [
+              "GET",
+              "POST"
+            ]
+          },
+          "path": {
+            "type": "string",
+            "pattern": "^/v1/"
+          },
+          "path_parameters": {
+            "anyOf": [
+              {
+                "type": "object",
+                "properties": {
+                  "$ref": {
+                    "type": "string",
+                    "pattern": "^schemas/aist\\.schema\\.json#/\\$defs/[A-Za-z]+$"
+                  }
+                },
+                "required": [
+                  "$ref"
+                ],
+                "additionalProperties": false
+              },
+              {
+                "type": "null"
+              }
+            ]
+          },
+          "query": {
+            "anyOf": [
+              {
+                "type": "object",
+                "properties": {
+                  "$ref": {
+                    "type": "string",
+                    "pattern": "^schemas/aist\\.schema\\.json#/\\$defs/[A-Za-z]+$"
+                  }
+                },
+                "required": [
+                  "$ref"
+                ],
+                "additionalProperties": false
+              },
+              {
+                "type": "null"
+              }
+            ]
+          },
+          "headers": {
+            "anyOf": [
+              {
+                "type": "object",
+                "properties": {
+                  "$ref": {
+                    "type": "string",
+                    "pattern": "^schemas/aist\\.schema\\.json#/\\$defs/[A-Za-z]+$"
+                  }
+                },
+                "required": [
+                  "$ref"
+                ],
+                "additionalProperties": false
+              },
+              {
+                "type": "null"
+              }
+            ]
+          },
+          "request": {
+            "anyOf": [
+              {
+                "type": "object",
+                "properties": {
+                  "content_type": {
+                    "enum": [
+                      "application/json",
+                      "multipart/form-data"
+                    ]
+                  },
+                  "schema": {
+                    "type": "object",
+                    "properties": {
+                      "$ref": {
+                        "type": "string",
+                        "pattern": "^schemas/aist\\.schema\\.json#/\\$defs/[A-Za-z]+$"
+                      }
+                    },
+                    "required": [
+                      "$ref"
+                    ],
+                    "additionalProperties": false
+                  },
+                  "json_part": {
+                    "anyOf": [
+                      {
+                        "const": "metadata"
+                      },
+                      {
+                        "type": "null"
+                      }
+                    ]
+                  },
+                  "binary_part": {
+                    "anyOf": [
+                      {
+                        "const": "file"
+                      },
+                      {
+                        "type": "null"
+                      }
+                    ]
+                  }
+                },
+                "required": [
+                  "content_type",
+                  "schema",
+                  "json_part",
+                  "binary_part"
+                ],
+                "additionalProperties": false
+              },
+              {
+                "type": "null"
+              }
+            ]
+          },
+          "responses": {
+            "type": "object",
+            "minProperties": 1,
+            "patternProperties": {
+              "^2[0-9][0-9]$": {
+                "type": "object",
+                "properties": {
+                  "content_type": {
+                    "enum": [
+                      "application/json",
+                      "application/octet-stream",
+                      "text/event-stream",
+                      "image/jpeg"
+                    ]
+                  },
+                  "schema": {
+                    "anyOf": [
+                      {
+                        "type": "object",
+                        "properties": {
+                          "$ref": {
+                            "type": "string",
+                            "pattern": "^schemas/aist\\.schema\\.json#/\\$defs/[A-Za-z]+$"
+                          }
+                        },
+                        "required": [
+                          "$ref"
+                        ],
+                        "additionalProperties": false
+                      },
+                      {
+                        "type": "null"
+                      }
+                    ]
+                  },
+                  "headers": {
+                    "anyOf": [
+                      {
+                        "type": "object",
+                        "properties": {
+                          "$ref": {
+                            "type": "string",
+                            "pattern": "^schemas/aist\\.schema\\.json#/\\$defs/[A-Za-z]+$"
+                          }
+                        },
+                        "required": [
+                          "$ref"
+                        ],
+                        "additionalProperties": false
+                      },
+                      {
+                        "type": "null"
+                      }
+                    ]
+                  }
+                },
+                "required": [
+                  "content_type",
+                  "schema",
+                  "headers"
+                ],
+                "additionalProperties": false
+              }
+            },
+            "additionalProperties": false
+          },
+          "errors": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            },
+            "uniqueItems": true
+          },
+          "idempotency": {
+            "type": "boolean"
+          }
+        },
+        "required": [
+          "method",
+          "path",
+          "path_parameters",
+          "query",
+          "headers",
+          "request",
+          "responses",
+          "errors",
+          "idempotency"
+        ],
+        "additionalProperties": false
+      }
+    }
+  },
+  "required": [
+    "$schema",
+    "contract_version",
+    "status",
+    "authentication",
+    "common_errors",
+    "error_schema",
+    "error_statuses",
+    "operations"
+  ],
+  "additionalProperties": false
+}

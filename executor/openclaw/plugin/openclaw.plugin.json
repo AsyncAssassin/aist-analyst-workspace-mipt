@@ -1,0 +1,60 @@
+{
+  "id": "aist-tools",
+  "name": "AIST source-bound tools",
+  "version": "1.0.0",
+  "configSchema": {
+    "type": "object",
+    "additionalProperties": false,
+    "properties": {}
+  },
+  "contracts": {
+    "tools": [
+      "aist_read_source",
+      "aist_search_evidence",
+      "aist_get_facts",
+      "aist_calculate",
+      "aist_save_artifact",
+      "aist_request_input",
+      "aist_web_search",
+      "aist_web_fetch",
+      "aist_read_task",
+      "aist_read_web",
+      "aist_research"
+    ]
+  },
+  "toolMetadata": {
+    "aist_read_source": {
+      "optional": true
+    },
+    "aist_search_evidence": {
+      "optional": true
+    },
+    "aist_get_facts": {
+      "optional": true
+    },
+    "aist_calculate": {
+      "optional": true
+    },
+    "aist_save_artifact": {
+      "optional": true
+    },
+    "aist_request_input": {
+      "optional": true
+    },
+    "aist_web_search": {
+      "optional": true
+    },
+    "aist_web_fetch": {
+      "optional": true
+    },
+    "aist_read_task": {
+      "optional": true
+    },
+    "aist_read_web": {
+      "optional": true
+    },
+    "aist_research": {
+      "optional": true
+    }
+  }
+}

@@ -1,0 +1,25 @@
+{
+  "run": {
+    "policy_version": "d13-novita-continuation.v1",
+    "currency": "USD",
+    "limit": "6.39844745",
+    "max_model_calls": 8,
+    "max_tool_calls": 20,
+    "max_duration_seconds": 1200,
+    "max_repair_calls": 0
+  },
+  "project_limit": "6.39844745",
+  "quote_usd": "0.15",
+  "input_per_million": "0.435",
+  "output_per_million": "0.87",
+  "pricing_version": "novita-catalog-2026-10-14.v1",
+  "budget_scope": "novita-authorized-total",
+  "historical_exposure_usd": "3.60155255",
+  "historical_post_count": 24,
+  "total_authorized_usd": "10",
+  "provider_billed_usd": null,
+  "catalog_input_per_million": "0.435",
+  "catalog_output_per_million": "0.87",
+  "catalog_source": "https://novita.ai/models/model-detail/xiaomimimo-mimo-v2.6-pro",
+  "catalog_checked_on": "2026-10-14"
+}

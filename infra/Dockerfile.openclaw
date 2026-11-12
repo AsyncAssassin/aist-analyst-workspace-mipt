@@ -1,0 +1,20 @@
+ARG BACKEND_IMAGE=aist-backend:local
+FROM --platform=linux/amd64 node:24.21.0-bookworm-slim@sha256:d6aa754f16b3197301076f047b5def2f02ea1dbbc2ca920407d46d7ec7f87b20 AS openclaw
+WORKDIR /runtime
+COPY executor/openclaw/runtime/package.json executor/openclaw/runtime/package-lock.json ./
+RUN test "$(node --version)" = v24.21.0 && test "$(npm --version)" = 11.19.0 \
+    && npm ci --ignore-scripts --no-audit --no-fund \
+    && test -f /runtime/node_modules/openclaw/dist/client-3bxKJdYL.mjs
+RUN --network=none node /runtime/node_modules/openclaw/scripts/postinstall-bundled-plugins.mjs \
+    && node /runtime/node_modules/openclaw/openclaw.mjs --version
+
+FROM ${BACKEND_IMAGE}
+USER root
+COPY --from=openclaw /usr/local/ /opt/aist-openclaw/tools/node-v24.21.0/
+COPY --from=openclaw /runtime/node_modules/ /opt/aist-openclaw/tools/node-v24.21.0/lib/node_modules/
+RUN mkdir -p /opt/aist-openclaw/bin /result \
+    && ln -s ../lib/node_modules/openclaw/openclaw.mjs /opt/aist-openclaw/tools/node-v24.21.0/bin/openclaw \
+    && ln -s ../tools/node-v24.21.0/bin/openclaw /opt/aist-openclaw/bin/openclaw \
+    && chown 10001:10001 /result
+USER 10001:10001
+RUN --network=none /opt/aist-openclaw/tools/node-v24.21.0/bin/node /opt/aist-openclaw/tools/node-v24.21.0/lib/node_modules/openclaw/openclaw.mjs --version

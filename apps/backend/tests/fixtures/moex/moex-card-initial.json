@@ -1,0 +1,53 @@
+{
+  "_synthetic": "Hand-authored API fixture. Fixed identifiers match the adapter; labels and prices are synthetic.",
+  "description": {
+    "columns": [
+      "name",
+      "value"
+    ],
+    "data": [
+      [
+        "SECID",
+        "WUSH"
+      ],
+      [
+        "ISIN",
+        "RU000A105EX7"
+      ],
+      [
+        "EMITTER_ID",
+        "13955"
+      ],
+      [
+        "REGNUMBER",
+        "TEST-REG-01"
+      ],
+      [
+        "NAME",
+        "Synthetic WUSH fixture"
+      ]
+    ]
+  },
+  "boards": {
+    "columns": [
+      "secid",
+      "boardid",
+      "engine",
+      "market",
+      "currencyid",
+      "is_primary",
+      "history_till"
+    ],
+    "data": [
+      [
+        "WUSH",
+        "TQBR",
+        "stock",
+        "shares",
+        "RUB",
+        1,
+        "2026-10-14"
+      ]
+    ]
+  }
+}

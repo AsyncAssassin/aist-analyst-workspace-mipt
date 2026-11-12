@@ -1,0 +1,850 @@
+{
+  "cases": [
+    {
+      "id": "trusted-owner-injection",
+      "schema": {
+        "$ref": "../schemas/aist.schema.json#/$defs/CreateMessageRun"
+      },
+      "value": {
+        "expected_revision": 0,
+        "text": "Назови выручку за 1Q25 и ее рост к 1Q24.",
+        "source_version_ids": [
+          "sv_spectromer-v1"
+        ],
+        "skill_version_id": "skill_source-answer-v1",
+        "model_profile_version_id": "model_novita-mimo-v1",
+        "requested_result_type": "evidence_answer",
+        "parameters": {
+          "audience": null,
+          "sections": []
+        },
+        "base_version_id": null,
+        "expected_artifact_revision": 0,
+        "requested_export": null,
+        "owner_id": "usr_other"
+      },
+      "reason": "Модель и клиент не назначают владельца."
+    },
+    {
+      "id": "arbitrary-file-path",
+      "schema": {
+        "$ref": "../schemas/aist.schema.json#/$defs/CreateExport"
+      },
+      "value": {
+        "expected_revision": 3,
+        "format": "docx",
+        "template_version": "aist-note.v1",
+        "renderer_version": "aist-docx.v1",
+        "settings": {
+          "locale": "ru-RU",
+          "paper": "A4",
+          "release_mode": "accepted",
+          "theme": "standard"
+        },
+        "path": "/tmp/arbitrary"
+      },
+      "reason": "Путь отсутствует в публичном контракте."
+    },
+    {
+      "id": "financial-float",
+      "schema": {
+        "$ref": "../schemas/aist.schema.json#/$defs/Amount"
+      },
+      "value": {
+        "value": 475.01,
+        "unit": "money",
+        "scale": "1000000",
+        "currency": "RUB"
+      },
+      "reason": "Десятичное значение должно быть строкой."
+    },
+    {
+      "id": "null-cost-without-reason",
+      "schema": {
+        "$ref": "../schemas/aist.schema.json#/$defs/UsageEntry"
+      },
+      "value": {
+        "id": "usage_unknown",
+        "run_id": "run_unknown",
+        "model_call_id": "call_unknown",
+        "supersedes_id": null,
+        "tokens": {
+          "input": {
+            "value": null,
+            "reason": "Не предоставлено провайдером."
+          },
+          "output": {
+            "value": null,
+            "reason": "Не предоставлено провайдером."
+          },
+          "cached_input": {
+            "value": null,
+            "reason": "Не предоставлено провайдером."
+          },
+          "reasoning_output": {
+            "value": null,
+            "reason": "Не предоставлено провайдером."
+          }
+        },
+        "estimated_usd": {
+          "value": null,
+          "reason": null
+        },
+        "billed_usd": {
+          "value": null,
+          "reason": "Счет по отдельному вызову отсутствует."
+        },
+        "pricing_version": null,
+        "reserved_usd": "0.02",
+        "reservation_state": "held",
+        "evidence_kind": "reservation",
+        "created_at": "2026-10-08T10:01:00Z"
+      },
+      "reason": "Неизвестность требует причины."
+    },
+    {
+      "id": "late-success-result",
+      "schema": {
+        "$ref": "../schemas/aist.schema.json#/$defs/Run"
+      },
+      "value": {
+        "id": "run_cancel",
+        "project_id": "prj_demo",
+        "conversation_id": "conv_demo",
+        "message_id": "msg_cancel",
+        "created_by": "usr_analyst",
+        "revision": 2,
+        "state": "cancelled",
+        "input": {
+          "source_versions": [
+            {
+              "source_id": "src_spectromer",
+              "source_version_id": "sv_spectromer-v1",
+              "sha256": "73dc05b6c51505b44f8f66ddbc81f825155d6150bb21bff398544ac2179f4861"
+            }
+          ],
+          "skill_version_id": "skill_source-answer-v1",
+          "model_profile_version_id": "model_novita-mimo-v1",
+          "requested_result_type": "evidence_answer",
+          "parameters": {
+            "audience": null,
+            "sections": []
+          },
+          "base_version_id": null,
+          "target_artifact_id": null,
+          "expected_artifact_revision": 0,
+          "budget": {
+            "policy_version": "fixture-budget.v1",
+            "currency": "USD",
+            "limit": "0.50",
+            "max_model_calls": 12,
+            "max_tool_calls": 20,
+            "max_duration_seconds": 300,
+            "max_repair_calls": 1
+          },
+          "requested_export": null
+        },
+        "request_sha256": "8df019663cef96bc0c201f3a8e09c53175503bd2162c14197e1016be7aa22132",
+        "result_version_id": "av_answer-v1",
+        "error": null,
+        "waiting_input": null,
+        "last_event_seq": 3,
+        "created_at": "2026-10-08T10:00:00Z",
+        "updated_at": "2026-10-08T10:01:00Z"
+      },
+      "reason": "Отмененная задача не публикует успешную версию."
+    },
+    {
+      "id": "acceptance-on-immutable-version",
+      "schema": {
+        "$ref": "../schemas/aist.schema.json#/$defs/ArtifactVersion"
+      },
+      "value": {
+        "id": "av_note-v2",
+        "project_id": "prj_demo",
+        "artifact_id": "art_note",
+        "revision": 2,
+        "parent_version_id": "av_note-v1",
+        "payload": {
+          "result_type": "analytical_note",
+          "schema_version": "1.0.0",
+          "content": {
+            "title": "Квартальная выручка «Спектромера»",
+            "audience": "Инвестиционный аналитик",
+            "sections": [
+              {
+                "section_id": "sec_revenue",
+                "title": "Показатели",
+                "blocks": [
+                  {
+                    "block_id": "block_intro",
+                    "kind": "paragraph",
+                    "claim": {
+                      "text": "За I квартал 2025 года выручка составила 542 млн рублей.",
+                      "origin": "source_fact",
+                      "fact_refs": [
+                        {
+                          "source_version_id": "sv_spectromer-v1",
+                          "fact_id": "fact_current"
+                        }
+                      ],
+                      "calculation_ids": []
+                    }
+                  },
+                  {
+                    "block_id": "block_table",
+                    "kind": "table",
+                    "caption": "Опубликованные показатели и расчет",
+                    "rows": [
+                      {
+                        "row_id": "row_previous",
+                        "label": "Выручка",
+                        "period_label": "1Q24",
+                        "amount": {
+                          "value": "475",
+                          "unit": "money",
+                          "scale": "1000000",
+                          "currency": "RUB"
+                        },
+                        "fact_refs": [
+                          {
+                            "source_version_id": "sv_spectromer-v1",
+                            "fact_id": "fact_previous"
+                          }
+                        ],
+                        "calculation_ids": []
+                      },
+                      {
+                        "row_id": "row_current",
+                        "label": "Выручка",
+                        "period_label": "1Q25",
+                        "amount": {
+                          "value": "542",
+                          "unit": "money",
+                          "scale": "1000000",
+                          "currency": "RUB"
+                        },
+                        "fact_refs": [
+                          {
+                            "source_version_id": "sv_spectromer-v1",
+                            "fact_id": "fact_current"
+                          }
+                        ],
+                        "calculation_ids": []
+                      },
+                      {
+                        "row_id": "row_growth",
+                        "label": "Рост",
+                        "period_label": "1Q25 к 1Q24",
+                        "amount": {
+                          "value": "14.11",
+                          "unit": "percent",
+                          "scale": "1",
+                          "currency": null
+                        },
+                        "fact_refs": [],
+                        "calculation_ids": [
+                          "calc_growth"
+                        ]
+                      }
+                    ]
+                  }
+                ]
+              },
+              {
+                "section_id": "sec_limits",
+                "title": "Ограничения",
+                "blocks": [
+                  {
+                    "block_id": "block_limits",
+                    "kind": "paragraph",
+                    "claim": {
+                      "text": "Сводка не уточняет стандарт и периметр отчетности. Суммы округлены.",
+                      "origin": "inference",
+                      "fact_refs": [
+                        {
+                          "source_version_id": "sv_spectromer-v1",
+                          "fact_id": "fact_current"
+                        }
+                      ],
+                      "calculation_ids": []
+                    }
+                  },
+                  {
+                    "block_id": "block_human",
+                    "kind": "paragraph",
+                    "claim": {
+                      "text": "Для кредитного комитета требуется отдельная проверка устойчивости модели финансирования.",
+                      "origin": "human_editorial",
+                      "fact_refs": [],
+                      "calculation_ids": []
+                    }
+                  }
+                ]
+              }
+            ]
+          }
+        },
+        "basis": {
+          "facts": [
+            {
+              "fact_id": "fact_previous",
+              "source": {
+                "source_id": "src_spectromer",
+                "source_version_id": "sv_spectromer-v1",
+                "sha256": "73dc05b6c51505b44f8f66ddbc81f825155d6150bb21bff398544ac2179f4861"
+              },
+              "extraction_version": "facts.v1",
+              "metric": "Выручка",
+              "subject": "Спектромер, периметр консолидации не раскрыт",
+              "reporting_basis": "Стандарт не указан в сводке",
+              "nature": "reported_actual",
+              "period": {
+                "kind": "interval",
+                "label": "1Q24",
+                "start": "2024-01-01",
+                "end": "2024-03-31"
+              },
+              "raw_text": "475",
+              "amount": {
+                "value": "475",
+                "unit": "money",
+                "scale": "1000000",
+                "currency": "RUB"
+              },
+              "evidence": [
+                {
+                  "evidence_id": "ev_previous",
+                  "source": {
+                    "source_id": "src_spectromer",
+                    "source_version_id": "sv_spectromer-v1",
+                    "sha256": "73dc05b6c51505b44f8f66ddbc81f825155d6150bb21bff398544ac2179f4861"
+                  },
+                  "locator": {
+                    "pdf_page": 2,
+                    "area": "Строка выручки, 1Q24",
+                    "bbox_pt": [
+                      68,
+                      102,
+                      301,
+                      118
+                    ],
+                    "coordinate_system": "pdf_points_top_left"
+                  },
+                  "quote": "Выручка за 1Q24: 475 млн руб."
+                }
+              ],
+              "limitations": [
+                "В сводке суммы приведены в целых миллионах рублей.",
+                "Стандарт и периметр не раскрыты."
+              ]
+            },
+            {
+              "fact_id": "fact_current",
+              "source": {
+                "source_id": "src_spectromer",
+                "source_version_id": "sv_spectromer-v1",
+                "sha256": "73dc05b6c51505b44f8f66ddbc81f825155d6150bb21bff398544ac2179f4861"
+              },
+              "extraction_version": "facts.v1",
+              "metric": "Выручка",
+              "subject": "Спектромер, периметр консолидации не раскрыт",
+              "reporting_basis": "Стандарт не указан в сводке",
+              "nature": "reported_actual",
+              "period": {
+                "kind": "interval",
+                "label": "1Q25",
+                "start": "2025-01-01",
+                "end": "2025-03-31"
+              },
+              "raw_text": "542",
+              "amount": {
+                "value": "542",
+                "unit": "money",
+                "scale": "1000000",
+                "currency": "RUB"
+              },
+              "evidence": [
+                {
+                  "evidence_id": "ev_current",
+                  "source": {
+                    "source_id": "src_spectromer",
+                    "source_version_id": "sv_spectromer-v1",
+                    "sha256": "73dc05b6c51505b44f8f66ddbc81f825155d6150bb21bff398544ac2179f4861"
+                  },
+                  "locator": {
+                    "pdf_page": 2,
+                    "area": "Строка выручки, 1Q25",
+                    "bbox_pt": [
+                      68,
+                      128,
+                      301,
+                      144
+                    ],
+                    "coordinate_system": "pdf_points_top_left"
+                  },
+                  "quote": "Выручка за 1Q25: 542 млн руб."
+                }
+              ],
+              "limitations": [
+                "В сводке суммы приведены в целых миллионах рублей.",
+                "Стандарт и периметр не раскрыты."
+              ]
+            }
+          ],
+          "calculations": [
+            {
+              "calculation_id": "calc_growth",
+              "formula_id": "growth_percent.v1",
+              "formula_display": "(current - previous) / previous * 100",
+              "inputs": [
+                {
+                  "name": "previous",
+                  "fact": {
+                    "source_version_id": "sv_spectromer-v1",
+                    "fact_id": "fact_previous"
+                  }
+                },
+                {
+                  "name": "current",
+                  "fact": {
+                    "source_version_id": "sv_spectromer-v1",
+                    "fact_id": "fact_current"
+                  }
+                }
+              ],
+              "exact": {
+                "numerator": "268",
+                "denominator": "19"
+              },
+              "rounded": {
+                "value": "14.11",
+                "unit": "percent",
+                "scale": "1",
+                "currency": null
+              },
+              "rounding": {
+                "places": 2,
+                "mode": "HALF_UP"
+              },
+              "limitations": [
+                "Точность расчета ограничена округленными исходными значениями."
+              ]
+            }
+          ]
+        },
+        "provenance": {
+          "origin": "human_edit",
+          "source_versions": [
+            {
+              "source_id": "src_spectromer",
+              "source_version_id": "sv_spectromer-v1",
+              "sha256": "73dc05b6c51505b44f8f66ddbc81f825155d6150bb21bff398544ac2179f4861"
+            }
+          ],
+          "run_id": null,
+          "skill_version_id": null,
+          "model_profile_version_id": null,
+          "actor_id": "usr_analyst",
+          "derived_from_version_id": null
+        },
+        "content_sha256": "920ad2747e39cab4de2b92941a53a2f6d1919f97374a875b1a0236d55b85550d",
+        "created_at": "2026-10-08T10:01:00Z",
+        "acceptance": {
+          "id": "accept_note_v1_accepted",
+          "artifact_version_id": "av_note-v1",
+          "content_sha256": "0ac17043a611b014623a07a8782a90239a0d66378d20f9e811da871f12a1245f",
+          "actor_id": "usr_analyst",
+          "validation_ids": [
+            "check_note_v1_view-programmatic",
+            "check_note_v1_view-semantic"
+          ],
+          "created_at": "2026-10-08T10:02:00Z",
+          "acknowledge_unchecked_semantics": true
+        }
+      },
+      "reason": "Принятие хранится отдельно и привязано к версии."
+    },
+    {
+      "id": "leaked-reasoning",
+      "schema": {
+        "$ref": "../schemas/aist.schema.json#/$defs/ModelCall"
+      },
+      "value": {
+        "id": "call_late",
+        "run_id": "run_cancel",
+        "parent_tool_call_id": null,
+        "parent_model_call_id": null,
+        "purpose": "agent",
+        "model_profile_version_id": "model_novita-mimo-v1",
+        "transport_state": "observed",
+        "provider_outcome": "success",
+        "provider_request_id": null,
+        "provider_completion_id": "completion-late",
+        "http_status": 200,
+        "attempted_at": "2026-10-08T10:00:00Z",
+        "sent_at": "2026-10-08T10:00:00Z",
+        "observed_at": "2026-10-08T10:01:00Z",
+        "late_response": true,
+        "delivery": "suppressed",
+        "usage_entry_id": "usage_late",
+        "error": null,
+        "reasoning_content": "private"
+      },
+      "reason": "Приватный reasoning отсутствует в публичной записи."
+    },
+    {
+      "id": "failed-tool-without-error",
+      "schema": {
+        "$ref": "../schemas/aist.schema.json#/$defs/ToolCall"
+      },
+      "value": {
+        "id": "tool_read-error",
+        "run_id": "run_error",
+        "model_call_id": "call_error",
+        "executor_tool_call_id": "oc-tool-001",
+        "name": "aist_read_source",
+        "arguments_sha256": "e82f5d51cb0c78783e097b3d484a61c8f89547c63afe0a03400f165391f44652",
+        "state": "failed",
+        "result_id": null,
+        "error": null,
+        "started_at": "2026-10-08T10:00:00Z",
+        "ended_at": "2026-10-08T10:01:00Z"
+      },
+      "reason": "Ошибка инструмента структурирована."
+    },
+    {
+      "id": "ready-export-without-file",
+      "schema": {
+        "$ref": "../schemas/aist.schema.json#/$defs/Export"
+      },
+      "value": {
+        "id": "exp_docx",
+        "project_id": "prj_demo",
+        "artifact_version_id": "av_note-v2",
+        "content_sha256": "920ad2747e39cab4de2b92941a53a2f6d1919f97374a875b1a0236d55b85550d",
+        "format": "docx",
+        "template_version": "aist-note.v1",
+        "renderer_version": "aist-docx.v1",
+        "settings": {
+          "locale": "ru-RU",
+          "paper": "A4",
+          "release_mode": "accepted",
+          "theme": "standard"
+        },
+        "acceptance_id": "accept_note_v2_accepted",
+        "state": "ready",
+        "revision": 2,
+        "file": null,
+        "release_check": {
+          "status": "passed",
+          "validator_version": "release.v1",
+          "checked_at": "2026-10-08T10:02:00Z",
+          "issues": []
+        },
+        "error": null,
+        "created_at": "2026-10-08T10:01:00Z",
+        "updated_at": "2026-10-08T10:02:00Z",
+        "identity_sha256": "a309b1fa6f43f58a119e0ce48d7c9565fbf9583cb8a9744bd47b2f5f7be2a639"
+      },
+      "reason": "Ready требует файл и успешную проверку выпуска."
+    },
+    {
+      "id": "bad-sha",
+      "schema": {
+        "$ref": "../schemas/aist.schema.json#/$defs/SourcePin"
+      },
+      "value": {
+        "source_id": "src_spectromer",
+        "source_version_id": "sv_spectromer-v1",
+        "sha256": "abc"
+      },
+      "reason": "SHA-256 имеет 64 hex символа."
+    },
+    {
+      "id": "negative-revision",
+      "schema": {
+        "$ref": "../schemas/aist.schema.json#/$defs/SaveVersion"
+      },
+      "value": {
+        "expected_revision": -1,
+        "parent_version_id": "av_note-v1",
+        "payload": {
+          "result_type": "analytical_note",
+          "schema_version": "1.0.0",
+          "content": {
+            "title": "Квартальная выручка «Спектромера»",
+            "audience": "Инвестиционный аналитик",
+            "sections": [
+              {
+                "section_id": "sec_revenue",
+                "title": "Показатели",
+                "blocks": [
+                  {
+                    "block_id": "block_intro",
+                    "kind": "paragraph",
+                    "claim": {
+                      "text": "За I квартал 2025 года выручка составила 542 млн рублей.",
+                      "origin": "source_fact",
+                      "fact_refs": [
+                        {
+                          "source_version_id": "sv_spectromer-v1",
+                          "fact_id": "fact_current"
+                        }
+                      ],
+                      "calculation_ids": []
+                    }
+                  },
+                  {
+                    "block_id": "block_table",
+                    "kind": "table",
+                    "caption": "Опубликованные показатели и расчет",
+                    "rows": [
+                      {
+                        "row_id": "row_previous",
+                        "label": "Выручка",
+                        "period_label": "1Q24",
+                        "amount": {
+                          "value": "475",
+                          "unit": "money",
+                          "scale": "1000000",
+                          "currency": "RUB"
+                        },
+                        "fact_refs": [
+                          {
+                            "source_version_id": "sv_spectromer-v1",
+                            "fact_id": "fact_previous"
+                          }
+                        ],
+                        "calculation_ids": []
+                      },
+                      {
+                        "row_id": "row_current",
+                        "label": "Выручка",
+                        "period_label": "1Q25",
+                        "amount": {
+                          "value": "542",
+                          "unit": "money",
+                          "scale": "1000000",
+                          "currency": "RUB"
+                        },
+                        "fact_refs": [
+                          {
+                            "source_version_id": "sv_spectromer-v1",
+                            "fact_id": "fact_current"
+                          }
+                        ],
+                        "calculation_ids": []
+                      },
+                      {
+                        "row_id": "row_growth",
+                        "label": "Рост",
+                        "period_label": "1Q25 к 1Q24",
+                        "amount": {
+                          "value": "14.11",
+                          "unit": "percent",
+                          "scale": "1",
+                          "currency": null
+                        },
+                        "fact_refs": [],
+                        "calculation_ids": [
+                          "calc_growth"
+                        ]
+                      }
+                    ]
+                  }
+                ]
+              },
+              {
+                "section_id": "sec_limits",
+                "title": "Ограничения",
+                "blocks": [
+                  {
+                    "block_id": "block_limits",
+                    "kind": "paragraph",
+                    "claim": {
+                      "text": "Сводка не уточняет стандарт и периметр отчетности. Суммы округлены.",
+                      "origin": "inference",
+                      "fact_refs": [
+                        {
+                          "source_version_id": "sv_spectromer-v1",
+                          "fact_id": "fact_current"
+                        }
+                      ],
+                      "calculation_ids": []
+                    }
+                  },
+                  {
+                    "block_id": "block_human",
+                    "kind": "paragraph",
+                    "claim": {
+                      "text": "Для кредитного комитета требуется отдельная проверка устойчивости модели финансирования.",
+                      "origin": "human_editorial",
+                      "fact_refs": [],
+                      "calculation_ids": []
+                    }
+                  }
+                ]
+              }
+            ]
+          }
+        }
+      },
+      "reason": "Ревизия неотрицательна."
+    },
+    {
+      "id": "unknown-payload-schema",
+      "schema": {
+        "$ref": "../schemas/aist.schema.json#/$defs/ResultPayload"
+      },
+      "value": {
+        "result_type": "evidence_answer",
+        "schema_version": "2.0.0",
+        "content": {
+          "claims": [
+            {
+              "text": "За I квартал 2025 года выручка составила 542 млн рублей.",
+              "origin": "source_fact",
+              "fact_refs": [
+                {
+                  "source_version_id": "sv_spectromer-v1",
+                  "fact_id": "fact_current"
+                }
+              ],
+              "calculation_ids": []
+            },
+            {
+              "text": "К I кварталу 2024 года выручка выросла на 14,11%.",
+              "origin": "calculation",
+              "fact_refs": [],
+              "calculation_ids": [
+                "calc_growth"
+              ]
+            }
+          ],
+          "missing_information": []
+        }
+      },
+      "reason": "Версия схемы фиксируется явно."
+    },
+    {
+      "id": "invalid-event-shape",
+      "schema": {
+        "$ref": "../schemas/aist.schema.json#/$defs/RunEvent"
+      },
+      "value": {
+        "run_id": "run_question",
+        "seq": 1,
+        "timestamp": "2026-10-08T10:01:00Z",
+        "call_id": null,
+        "tool_call_id": null,
+        "type": "state_changed",
+        "data": {
+          "to": "invented"
+        }
+      },
+      "reason": "Данные события соответствуют его типу."
+    },
+    {
+      "id": "ready-source-without-pages",
+      "schema": {
+        "$ref": "../schemas/aist.schema.json#/$defs/SourceVersion"
+      },
+      "value": {
+        "id": "sv_spectromer-v1",
+        "source_id": "src_spectromer",
+        "project_id": "prj_demo",
+        "revision": 1,
+        "sha256": "73dc05b6c51505b44f8f66ddbc81f825155d6150bb21bff398544ac2179f4861",
+        "byte_size": 1836,
+        "media_type": "application/pdf",
+        "original_filename": "spectromer-quarterly.pdf",
+        "processing_state": "ready",
+        "processor_version": "pdf-text.v1",
+        "page_count": null,
+        "error": null,
+        "created_at": "2026-10-08T10:00:00Z"
+      },
+      "reason": "Готовый источник имеет число страниц."
+    },
+    {
+      "id": "observed-without-time",
+      "schema": {
+        "$ref": "../schemas/aist.schema.json#/$defs/ModelCall"
+      },
+      "value": {
+        "id": "call_late",
+        "run_id": "run_cancel",
+        "parent_tool_call_id": null,
+        "parent_model_call_id": null,
+        "purpose": "agent",
+        "model_profile_version_id": "model_novita-mimo-v1",
+        "transport_state": "observed",
+        "provider_outcome": "success",
+        "provider_request_id": null,
+        "provider_completion_id": "completion-late",
+        "http_status": 200,
+        "attempted_at": "2026-10-08T10:00:00Z",
+        "sent_at": "2026-10-08T10:00:00Z",
+        "observed_at": null,
+        "late_response": true,
+        "delivery": "suppressed",
+        "usage_entry_id": "usage_late",
+        "error": null
+      },
+      "reason": "Наблюденный исход требует времени наблюдения."
+    },
+    {
+      "id": "invalid-timestamp",
+      "schema": {
+        "$ref": "../schemas/aist.schema.json#/$defs/Run"
+      },
+      "value": {
+        "id": "run_question",
+        "project_id": "prj_demo",
+        "conversation_id": "conv_demo",
+        "message_id": "msg_question",
+        "created_by": "usr_analyst",
+        "revision": 0,
+        "state": "queued",
+        "input": {
+          "source_versions": [
+            {
+              "source_id": "src_spectromer",
+              "source_version_id": "sv_spectromer-v1",
+              "sha256": "73dc05b6c51505b44f8f66ddbc81f825155d6150bb21bff398544ac2179f4861"
+            }
+          ],
+          "skill_version_id": "skill_source-answer-v1",
+          "model_profile_version_id": "model_novita-mimo-v1",
+          "requested_result_type": "evidence_answer",
+          "parameters": {
+            "audience": null,
+            "sections": []
+          },
+          "base_version_id": null,
+          "target_artifact_id": null,
+          "expected_artifact_revision": 0,
+          "budget": {
+            "policy_version": "fixture-budget.v1",
+            "currency": "USD",
+            "limit": "0.50",
+            "max_model_calls": 12,
+            "max_tool_calls": 20,
+            "max_duration_seconds": 300,
+            "max_repair_calls": 1
+          },
+          "requested_export": null
+        },
+        "request_sha256": "8df019663cef96bc0c201f3a8e09c53175503bd2162c14197e1016be7aa22132",
+        "result_version_id": null,
+        "error": null,
+        "waiting_input": null,
+        "last_event_seq": 1,
+        "created_at": "2026-99-40T10:00:00Z",
+        "updated_at": "2026-10-08T10:01:00Z"
+      },
+      "reason": "Некорректная календарная дата."
+    }
+  ]
+}
